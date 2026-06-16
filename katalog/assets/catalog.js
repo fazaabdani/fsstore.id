@@ -70,6 +70,22 @@ function splitTags(value) {
     .filter(Boolean);
 }
 
+function driveImageUrl(value) {
+  const link = String(value || "").trim();
+  if (!link) return "";
+  const fileMatch = link.match(/\/file\/d\/([^/]+)/) || link.match(/[?&]id=([^&]+)/);
+  if (fileMatch?.[1]) return `https://drive.google.com/thumbnail?id=${encodeURIComponent(fileMatch[1])}&sz=w1200`;
+  return /\.(png|jpe?g|webp|gif)(\?.*)?$/i.test(link) ? link : "";
+}
+
+function productImage(product, className = "product-image product-visual") {
+  const imageUrl = driveImageUrl(product.link_foto);
+  if (!imageUrl) {
+    return `<div class="${className}" aria-label="${escapeHtml(product.nama_produk)}"><div class="laptop-icon"></div></div>`;
+  }
+  return `<div class="${className}" aria-label="${escapeHtml(product.nama_produk)}"><img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(product.nama_produk)}" loading="lazy" referrerpolicy="no-referrer" onerror="const box=this.parentElement;this.remove();const fallback=document.createElement('div');fallback.className='laptop-icon';box.classList.add('product-visual');box.appendChild(fallback);"></div>`;
+}
+
 function sheetRowToProduct(row, index) {
   const brand = row[0]?.trim();
   const series = row[1]?.trim();
@@ -147,10 +163,39 @@ function fillSelect(id, values) {
   fields[id].innerHTML = firstOption + values.map(value => `<option value="${escapeHtml(value)}">${escapeHtml(value)}</option>`).join("");
 }
 
+function setText(id, value) {
+  const element = document.getElementById(id);
+  if (element) element.textContent = value;
+}
+
+function updateCatalogChrome() {
+  const brands = unique(products.map(item => item.brand));
+  const available = products.filter(item => item.status_ketersediaan?.toLowerCase().includes("tersedia"));
+  const featured = available[0] || products[0];
+
+  setText("brandCount", `${brands.length}+`);
+  setText("totalProducts", `${products.length}+`);
+  setText("availableCount", `${available.length || products.length}+`);
+
+  if (featured) {
+    setText("featureBrand", featured.brand || "FS.ID");
+    setText("featureName", featured.nama_produk || "Produk FS.ID");
+    setText("featureSpec", [featured.processor, featured.ram, featured.storage, featured.ukuran_layar].filter(Boolean).join(" - "));
+    setText("featurePrice", rupiah(featured.harga || 0));
+    setText("featureStatus", featured.status_ketersediaan || "Cek stok");
+  }
+
+  const ticker = document.getElementById("tickerTrack");
+  if (ticker) {
+    const items = products.slice(0, 10).map(product => `<span>${escapeHtml(product.brand)}</span><b>${escapeHtml(product.nama_produk)} - ${rupiah(product.harga || 0)}</b>`).join("");
+    ticker.innerHTML = items + items;
+  }
+}
+
 function productCard(product) {
   return `
     <article class="product-card">
-      <div class="product-image product-visual" aria-label="${escapeHtml(product.nama_produk)}"><div class="laptop-icon"></div></div>
+      ${productImage(product)}
       <div class="product-body">
         <div class="product-title"><h3>${escapeHtml(product.nama_produk)}</h3><span class="brand-pill">${escapeHtml(product.brand)}</span></div>
         <div class="specs"><span>${escapeHtml(product.processor)}</span><span>${escapeHtml(product.ram)}</span><span>${escapeHtml(product.storage)}</span><span>${escapeHtml(product.ukuran_layar)}</span></div>
@@ -198,7 +243,7 @@ function renderDetail(slug) {
     return;
   }
   document.getElementById("detailContent").innerHTML = `
-    <div class="detail-image product-visual detail-visual" aria-label="${escapeHtml(product.nama_produk)}"><div class="laptop-scene"><div class="display display-main"></div><div class="display display-side"></div><div class="keyboard-deck"></div></div></div>
+    ${productImage(product, "detail-image detail-visual")}
     <article class="detail-panel">
       <span class="brand-pill">${escapeHtml(product.brand)}</span>
       <h2>${escapeHtml(product.nama_produk)}</h2>
@@ -255,11 +300,13 @@ document.getElementById("resetFilters").addEventListener("click", () => {
 });
 window.addEventListener("hashchange", route);
 hydrateFilters();
+updateCatalogChrome();
 route();
 
 loadProductsFromSheet()
   .then(() => {
     hydrateFilters();
+    updateCatalogChrome();
     route();
   })
   .catch(error => {
