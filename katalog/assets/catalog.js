@@ -1,4 +1,5 @@
 let products = Array.isArray(window.FSID_PRODUCTS) ? window.FSID_PRODUCTS : [];
+let sheetLoading = true;
 const sheetCsvUrl = "https://docs.google.com/spreadsheets/d/1TaavUGsH5bmAWPdr2kMgKJCkrfzNoAuOI1OTZnLAsH0/gviz/tq?tqx=out:csv&sheet=Sheet1";
 const rupiah = value => new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(value);
 const wa = text => `https://wa.me/?text=${encodeURIComponent(text)}`;
@@ -70,6 +71,16 @@ function splitTags(value) {
     .filter(Boolean);
 }
 
+function splitPhotoLinks(value) {
+  const raw = String(value || "");
+  const urls = raw.match(/https?:\/\/[^\s,|]+/g);
+  if (urls?.length) return urls;
+  return raw
+    .split(/\s*(?:\r?\n|\||,)\s*/)
+    .map(item => item.trim())
+    .filter(Boolean);
+}
+
 function driveImageUrl(value) {
   const link = String(value || "").trim();
   if (!link) return "";
@@ -79,11 +90,34 @@ function driveImageUrl(value) {
 }
 
 function productImage(product, className = "product-image product-visual") {
-  const imageUrl = driveImageUrl(product.link_foto);
+  const imageUrl = product.foto_dinamis?.[0] || driveImageUrl(product.link_foto);
   if (!imageUrl) {
     return `<div class="${className}" aria-label="${escapeHtml(product.nama_produk)}"><div class="laptop-icon"></div></div>`;
   }
   return `<div class="${className}" aria-label="${escapeHtml(product.nama_produk)}"><img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(product.nama_produk)}" loading="lazy" referrerpolicy="no-referrer" onerror="const box=this.parentElement;this.remove();const fallback=document.createElement('div');fallback.className='laptop-icon';box.classList.add('product-visual');box.appendChild(fallback);"></div>`;
+}
+
+function productGallery(product) {
+  const images = product.foto_dinamis?.length ? product.foto_dinamis.slice(0, 3) : [];
+  if (!images.length) return productImage(product, "detail-image detail-visual");
+
+  const slides = images.map((image, index) => `
+    <figure class="gallery-slide">
+      <img src="${escapeHtml(image)}" alt="${escapeHtml(`${product.nama_produk} foto ${index + 1}`)}" loading="${index === 0 ? "eager" : "lazy"}" referrerpolicy="no-referrer">
+    </figure>
+  `).join("");
+  const dots = images.map((_, index) => `<button class="gallery-dot${index === 0 ? " active" : ""}" type="button" aria-label="Lihat foto ${index + 1}" data-slide="${index}"></button>`).join("");
+
+  return `
+    <div class="detail-gallery" data-gallery>
+      <div class="gallery-track">${slides}</div>
+      ${images.length > 1 ? `
+        <button class="gallery-nav gallery-prev" type="button" aria-label="Foto sebelumnya" data-gallery-prev>&lt;</button>
+        <button class="gallery-nav gallery-next" type="button" aria-label="Foto berikutnya" data-gallery-next>&gt;</button>
+        <div class="gallery-dots">${dots}</div>
+      ` : ""}
+    </div>
+  `;
 }
 
 function sheetRowToProduct(row, index) {
@@ -98,7 +132,8 @@ function sheetRowToProduct(row, index) {
   const status = row[8]?.trim() || (Number(stock) > 0 ? "Tersedia" : "Cek Ketersediaan");
   const features = splitTags(row[9]);
   const location = row[10]?.trim();
-  const photoLink = row[11]?.trim();
+  const photoLink = row.slice(11).filter(Boolean).join("\n").trim();
+  const photoLinks = splitPhotoLinks(photoLink).map(driveImageUrl).filter(Boolean).slice(0, 3);
 
   if (!brand || !series || !price) return null;
 
@@ -136,8 +171,9 @@ function sheetRowToProduct(row, index) {
     deskripsi_singkat: `${name} dengan ${processor}, ${ram}, ${storage}, dan layar ${display}.`,
     kelebihan: strengths,
     cocok_untuk: tags.slice(0, 3),
-    foto_utama: "assets/fsid-laptop-display.png",
-    foto_tambahan: ["assets/fsid-laptop-display.png"],
+    foto_utama: photoLinks[0] || "assets/fsid-laptop-display.png",
+    foto_tambahan: photoLinks,
+    foto_dinamis: photoLinks,
     link_foto: photoLink,
     slug_produk: slugify(`${name}-${processor}-${ram}-${storage}-${index}`),
     link_whatsapp: "",
@@ -239,11 +275,16 @@ function renderCatalog() {
 function renderDetail(slug) {
   const product = products.find(item => item.slug_produk === slug);
   if (!product) {
+    if (sheetLoading) {
+      document.getElementById("detailContent").innerHTML = `<div class="detail-panel"><strong>Memuat detail produk...</strong><p>Data foto dan stok sedang diambil dari Google Sheet.</p></div>`;
+      document.getElementById("relatedProducts").innerHTML = "";
+      return;
+    }
     location.hash = "#/";
     return;
   }
   document.getElementById("detailContent").innerHTML = `
-    ${productImage(product, "detail-image detail-visual")}
+    ${productGallery(product)}
     <article class="detail-panel">
       <span class="brand-pill">${escapeHtml(product.brand)}</span>
       <h2>${escapeHtml(product.nama_produk)}</h2>
@@ -270,8 +311,29 @@ function renderDetail(slug) {
       <a class="btn btn-whatsapp" href="${wa(`Assalamu'alaikum, saya mau konsultasi produk ${product.nama_produk}. Apakah ketersediaan dan harganya masih sesuai katalog?`)}" target="_blank" rel="noreferrer">Konsultasi WhatsApp</a>
     </article>
   `;
+  initGallery();
   const related = products.filter(item => item.brand === product.brand && item.slug_produk !== product.slug_produk).concat(products.filter(item => item.brand !== product.brand)).slice(0, 3);
   document.getElementById("relatedProducts").innerHTML = related.map(productCard).join("");
+}
+
+function initGallery() {
+  const gallery = document.querySelector("[data-gallery]");
+  if (!gallery) return;
+
+  const track = gallery.querySelector(".gallery-track");
+  const dots = [...gallery.querySelectorAll(".gallery-dot")];
+  let active = 0;
+
+  const show = index => {
+    const total = dots.length || track.children.length;
+    active = (index + total) % total;
+    track.style.transform = `translateX(-${active * 100}%)`;
+    dots.forEach((dot, dotIndex) => dot.classList.toggle("active", dotIndex === active));
+  };
+
+  gallery.querySelector("[data-gallery-prev]")?.addEventListener("click", () => show(active - 1));
+  gallery.querySelector("[data-gallery-next]")?.addEventListener("click", () => show(active + 1));
+  dots.forEach(dot => dot.addEventListener("click", () => show(Number(dot.dataset.slide || 0))));
 }
 
 function route() {
@@ -305,10 +367,12 @@ route();
 
 loadProductsFromSheet()
   .then(() => {
+    sheetLoading = false;
     hydrateFilters();
     updateCatalogChrome();
     route();
   })
   .catch(error => {
+    sheetLoading = false;
     console.warn(error);
   });
