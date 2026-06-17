@@ -139,13 +139,12 @@ function sheetRowToProduct(row, index) {
 
   const name = `${brand} ${series}`;
   const screenResolution = ["WUXGA", "FHD", "HD"].find(item => display?.toUpperCase().includes(item)) || "";
-  const tags = [...features, location, "Laptop baru"].filter(Boolean);
+  const tags = [...features, "Laptop baru"].filter(Boolean);
   const strengths = [
     processor,
     ram,
     storage,
-    display,
-    stock ? `Stok ${stock} unit` : ""
+    display
   ].filter(Boolean);
 
   return {
@@ -162,11 +161,9 @@ function sheetRowToProduct(row, index) {
     sistem_operasi: "-",
     warna: "-",
     garansi: "Hubungi admin FS.ID",
-    kelengkapan: "Unit dan kelengkapan sesuai stok toko",
+    kelengkapan: "Unit dan kelengkapan sesuai data toko",
     harga: price,
     status_ketersediaan: status,
-    stok: stock,
-    lokasi: location,
     kategori_kebutuhan: tags,
     deskripsi_singkat: `${name} dengan ${processor}, ${ram}, ${storage}, dan layar ${display}.`,
     kelebihan: strengths,
@@ -218,7 +215,7 @@ function updateCatalogChrome() {
     setText("featureName", featured.nama_produk || "Produk FS.ID");
     setText("featureSpec", [featured.processor, featured.ram, featured.storage, featured.ukuran_layar].filter(Boolean).join(" - "));
     setText("featurePrice", rupiah(featured.harga || 0));
-    setText("featureStatus", featured.status_ketersediaan || "Cek stok");
+    setText("featureStatus", featured.status_ketersediaan || "Cek produk");
   }
 
   const ticker = document.getElementById("tickerTrack");
@@ -276,7 +273,7 @@ function renderDetail(slug) {
   const product = products.find(item => item.slug_produk === slug);
   if (!product) {
     if (sheetLoading) {
-      document.getElementById("detailContent").innerHTML = `<div class="detail-panel"><strong>Memuat detail produk...</strong><p>Data foto dan stok sedang diambil dari Google Sheet.</p></div>`;
+      document.getElementById("detailContent").innerHTML = `<div class="detail-panel"><strong>Memuat detail produk...</strong><p>Data foto dan produk sedang diambil dari Google Sheet.</p></div>`;
       document.getElementById("relatedProducts").innerHTML = "";
       return;
     }
@@ -298,8 +295,6 @@ function renderDetail(slug) {
         <div><small>Layar</small>${escapeHtml(`${product.ukuran_layar} ${product.resolusi_layar}`)}</div>
         <div><small>Grafis</small>${escapeHtml(product.grafis)}</div>
         <div><small>Sistem operasi</small>${escapeHtml(product.sistem_operasi)}</div>
-        <div><small>Lokasi</small>${escapeHtml(product.lokasi || "-")}</div>
-        <div><small>Stok</small>${escapeHtml(product.stok || "-")}</div>
         <div><small>Garansi</small>${escapeHtml(product.garansi)}</div>
         <div><small>Update</small>${escapeHtml(product.tanggal_update)}</div>
       </div>
@@ -355,6 +350,12 @@ function hydrateFilters() {
 }
 
 ids.forEach(id => fields[id].addEventListener("input", renderCatalog));
+document.querySelectorAll('a[href="#/"]').forEach(link => {
+  link.addEventListener("click", () => {
+    ids.forEach(id => fields[id].value = "");
+    window.setTimeout(renderCatalog, 0);
+  });
+});
 document.getElementById("resetFilters").addEventListener("click", () => {
   ids.forEach(id => fields[id].value = "");
   history.replaceState(null, "", "#/");
