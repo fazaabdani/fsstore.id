@@ -3,152 +3,172 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>FS.ID - Solusi Laptop untuk Belajar, Kerja, dan Bisnis</title>
-  <meta name="description" content="FS.ID menghadirkan pilihan laptop dari berbagai brand terpercaya untuk kebutuhan pendidikan, pekerjaan, usaha, dan produktivitas harian.">
+  <title>FS.ID - Pusat Laptop, Komputer, Printer, dan Proyektor</title>
+  <meta name="description" content="FS.ID menyediakan laptop, komputer PC, all-in-one, printer, proyektor, dan scanner untuk kebutuhan personal, pendidikan, kantor, dan bisnis.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/styles.css?v=landing-20260617">
+  <link rel="stylesheet" href="assets/styles.css?v=dynamic-20260627">
 </head>
 <body class="landing-page">
   <div class="hazard-strip"></div>
-  <div class="scanline"></div>
 
   <header class="site-header">
     <nav class="nav" aria-label="Navigasi utama">
       <a class="brandmark" href="index.html"><span>FS</span> FS.ID</a>
       <div class="nav-links">
-        <a href="#brand">Brand</a>
+        <a href="#kategori">Kategori</a>
         <a href="#produk">Produk</a>
+        <a href="#keunggulan">Layanan</a>
         <a href="#lokasi">Lokasi</a>
-        <a class="btn btn-primary" href="katalog/index.html#/">Lihat Katalog</a>
       </div>
+      <a class="btn btn-primary nav-cta" href="katalog/index.html#/">Buka Katalog</a>
+    </nav>
+    <nav class="category-tabs" aria-label="Kategori produk">
+      <a href="katalog/index.html#/">Semua Produk</a>
+      <a href="katalog/index.html#/kategori/Laptop">Laptop</a>
+      <a href="katalog/index.html#/kategori/PC">PC</a>
+      <a href="katalog/index.html#/kategori/All-in-One">All-in-One</a>
+      <a href="katalog/index.html#/kategori/Printer">Printer</a>
+      <a href="katalog/index.html#/kategori/Proyektor">Proyektor</a>
+      <a href="katalog/index.html#/kategori/Scanner">Scanner</a>
     </nav>
   </header>
 
   <main>
     <section class="landing-hero">
-      <div class="hero-grid"></div>
-      <div class="hero-glow hero-glow-one"></div>
-      <div class="hero-glow hero-glow-two"></div>
-      <div class="container hero-inner">
+      <div class="hero-backdrop" aria-hidden="true">
+        <img id="heroProductImage" src="katalog/assets/fsid-premium-hero.png" alt="">
+      </div>
+      <div class="hero-overlay"></div>
+      <div class="container hero-content">
         <div class="hero-copy">
-          <p class="terminal-label"><span></span> fsstore.id / laptop retail system</p>
-          <h1>Solusi Laptop untuk Belajar, Kerja, dan Bisnis</h1>
-          <p class="section-lead">FS.ID menghadirkan pilihan laptop dari berbagai brand terpercaya untuk kebutuhan pendidikan, pekerjaan, usaha, dan produktivitas harian.</p>
+          <p class="terminal-label"><span></span> fsstore.id / perangkat teknologi</p>
+          <h1>FS.ID</h1>
+          <p class="hero-offer">Pusat Laptop, Komputer, Printer, dan Proyektor</p>
+          <p class="section-lead">Pilihan perangkat untuk rumah, sekolah, kantor, dan bisnis dengan informasi harga serta spesifikasi yang mudah dibandingkan.</p>
           <div class="hero-actions">
-            <a class="btn btn-primary" href="katalog/index.html#/">Lihat Katalog</a>
-            <a class="btn btn-whatsapp" href="https://wa.me/?text=Assalamu%27alaikum%2C%20saya%20mau%20konsultasi%20pilihan%20laptop%20di%20FS.ID.%20Kebutuhan%20saya%20untuk%20..." target="_blank" rel="noreferrer">Konsultasi Produk</a>
-          </div>
-          <div class="hero-stats">
-            <div><strong id="brandCount">5+</strong><small>Brand tersedia</small></div>
-            <div><strong id="productCount">10+</strong><small>Produk katalog</small></div>
-            <div><strong>0 Rp</strong><small>Biaya konsultasi</small></div>
+            <a class="btn btn-primary" href="katalog/index.html#/">Jelajahi Katalog</a>
+            <a class="btn btn-whatsapp" href="https://wa.me/?text=Assalamu%27alaikum%2C%20saya%20mau%20konsultasi%20produk%20di%20FS.ID.%20Kebutuhan%20saya%20untuk%20..." target="_blank" rel="noreferrer">Konsultasi Produk</a>
           </div>
         </div>
 
-        <aside class="hero-console" aria-label="Rekomendasi produk">
-          <div class="console-badge">Rekomendasi utama</div>
-          <div class="console-panel">
-            <p class="console-brand" id="heroProductBrand">FS.ID</p>
-            <h2 id="heroProductName">Memuat produk...</h2>
-            <p id="heroProductSpec">Data produk sedang diambil dari Google Sheet.</p>
-            <div class="console-bottom">
-              <strong id="heroProductPrice">Live</strong>
-              <a href="katalog/index.html#/" class="mini-link">Detail</a>
+        <div class="hero-product" aria-live="polite">
+          <div class="hero-product-copy">
+            <p><span id="heroProductCategory">Produk pilihan</span> / <span id="heroProductBrand">FS.ID</span></p>
+            <a id="heroProductLink" href="katalog/index.html#/">
+              <strong id="heroProductName">Memuat pilihan produk...</strong>
+            </a>
+            <small id="heroProductSpec">Harga dan spesifikasi terbaru tersedia di katalog.</small>
+          </div>
+          <div class="hero-product-price">
+            <strong id="heroProductPrice">Live</strong>
+            <div class="hero-controls">
+              <button type="button" data-hero-prev aria-label="Produk sebelumnya">&larr;</button>
+              <button type="button" data-hero-next aria-label="Produk berikutnya">&rarr;</button>
             </div>
           </div>
-          <div class="mini-grid" id="miniProducts">
-            <div class="mini-card"><small>SYNC</small><strong>Google Sheet</strong><span>Katalog live</span></div>
-            <div class="mini-card"><small>FOTO</small><strong>Drive thumbnail</strong><span>Dinamis</span></div>
-          </div>
-        </aside>
+        </div>
+
+        <div class="hero-stats">
+          <div><strong id="categoryCount">6</strong><small>Kategori produk</small></div>
+          <div><strong id="productCount">40+</strong><small>Pilihan katalog</small></div>
+          <div><strong>Gratis</strong><small>Konsultasi produk</small></div>
+        </div>
       </div>
     </section>
 
     <div class="ticker-wrap" aria-hidden="true">
       <div class="ticker" id="landingTicker">
-        <span>FS.ID</span><b>Konsultasi gratis</b><span>Spesifikasi jelas</span><b>Brand terpercaya</b>
-        <span>FS.ID</span><b>Konsultasi gratis</b><span>Spesifikasi jelas</span><b>Brand terpercaya</b>
+        <span>Laptop</span><b>Komputer PC</b><span>All-in-One</span><b>Printer</b><span>Proyektor</span><b>Scanner</b>
+        <span>Laptop</span><b>Komputer PC</b><span>All-in-One</span><b>Printer</b><span>Proyektor</span><b>Scanner</b>
       </div>
     </div>
 
-    <section class="section band" id="brand">
+    <section class="section category-section" id="kategori">
       <div class="container">
         <div class="section-head">
           <div>
-            <p class="panel-kicker">01 / Brand tersedia</p>
-            <h2>Pilihan brand laptop untuk beragam kebutuhan</h2>
+            <p class="panel-kicker">01 / Kategori</p>
+            <h2>Belanja sesuai jenis perangkat</h2>
           </div>
-          <a class="btn btn-light" href="katalog/index.html#/">Buka katalog</a>
+          <p class="section-note">Pilih kategori untuk membuka produk yang relevan beserta filter spesifikasinya.</p>
         </div>
-        <div class="brand-grid">
-          <a href="katalog/index.html#/brand/Lenovo" class="brand-item"><strong>Lenovo</strong><span>Produktif</span></a>
-          <a href="katalog/index.html#/brand/Acer" class="brand-item"><strong>Acer</strong><span>Terjangkau</span></a>
-          <a href="katalog/index.html#/brand/ASUS" class="brand-item"><strong>ASUS</strong><span>Andalan</span></a>
-          <a href="katalog/index.html#/brand/Advan" class="brand-item"><strong>Advan</strong><span>Lokal</span></a>
-          <a href="katalog/index.html#/brand/Axioo" class="brand-item"><strong>Axioo</strong><span>Pendidikan</span></a>
-        </div>
-        <div class="need-tags">
-          <span>Pendidikan</span><span>Kuliah</span><span>Kerja kantor</span><span>Bisnis dan usaha</span><span>Online shop</span><span>Administrasi</span><span>Desain ringan</span><span>Meeting online</span><span>Mobilitas tinggi</span><span>Penggunaan harian</span>
+        <div class="category-grid">
+          <a class="category-item" href="katalog/index.html#/kategori/Laptop"><span>01</span><strong>Laptop</strong><small><b data-category-count="Laptop">0</b> produk</small></a>
+          <a class="category-item" href="katalog/index.html#/kategori/PC"><span>02</span><strong>Komputer PC</strong><small><b data-category-count="PC">0</b> produk</small></a>
+          <a class="category-item" href="katalog/index.html#/kategori/All-in-One"><span>03</span><strong>All-in-One</strong><small><b data-category-count="All-in-One">0</b> produk</small></a>
+          <a class="category-item" href="katalog/index.html#/kategori/Printer"><span>04</span><strong>Printer</strong><small><b data-category-count="Printer">0</b> produk</small></a>
+          <a class="category-item" href="katalog/index.html#/kategori/Proyektor"><span>05</span><strong>Proyektor</strong><small><b data-category-count="Proyektor">0</b> produk</small></a>
+          <a class="category-item" href="katalog/index.html#/kategori/Scanner"><span>06</span><strong>Scanner</strong><small><b data-category-count="Scanner">0</b> produk</small></a>
         </div>
       </div>
     </section>
 
-    <section class="section" id="produk">
+    <section class="section band" id="produk">
       <div class="container">
         <div class="section-head">
           <div>
             <p class="panel-kicker">02 / Produk pilihan</p>
-            <h2>Beberapa perangkat dari katalog FS.ID</h2>
+            <h2>Temukan perangkat yang sesuai</h2>
           </div>
-          <a class="btn btn-primary" href="katalog/index.html#/">Lihat semua produk</a>
+          <a class="btn btn-light" id="viewAllProducts" href="katalog/index.html#/">Lihat Semua Produk</a>
         </div>
-        <div id="featuredProducts" class="featured-grid"></div>
+        <div class="product-tabs" role="group" aria-label="Filter produk pilihan">
+          <button class="active" type="button" data-feature-category="">Semua</button>
+          <button type="button" data-feature-category="Laptop">Laptop</button>
+          <button type="button" data-feature-category="PC">PC</button>
+          <button type="button" data-feature-category="All-in-One">All-in-One</button>
+          <button type="button" data-feature-category="Printer">Printer</button>
+          <button type="button" data-feature-category="Proyektor">Proyektor</button>
+          <button type="button" data-feature-category="Scanner">Scanner</button>
+        </div>
+        <div id="featuredProducts" class="featured-grid">
+          <div class="loading-products">Memuat produk terbaru...</div>
+        </div>
       </div>
     </section>
 
-    <section class="section band">
+    <section class="section" id="keunggulan">
       <div class="container">
         <div class="section-head">
           <div>
-            <p class="panel-kicker">03 / Kenapa FS.ID</p>
-            <h2>Informasi produk dibuat jelas untuk pelanggan retail</h2>
+            <p class="panel-kicker">03 / Layanan</p>
+            <h2>Lebih mudah memilih perangkat</h2>
           </div>
         </div>
-        <div class="why-grid">
-          <article class="why-card"><small>01 / Brand</small><strong>Pilihan brand terpercaya</strong><p>Lenovo, Acer, ASUS, Advan, dan Axioo tersedia dalam satu katalog produk yang mudah dibandingkan.</p></article>
-          <article class="why-card"><small>02 / Spesifikasi</small><strong>Spesifikasi jelas</strong><p>Processor, RAM, storage, layar, harga, dan foto produk ditampilkan rapi dari data katalog.</p></article>
-          <article class="why-card"><small>03 / Konsultasi</small><strong>Bisa konsultasi</strong><p>Admin membantu memilih perangkat sesuai kebutuhan, aktivitas, dan anggaran.</p></article>
+        <div class="service-grid">
+          <article><small>01</small><strong>Spesifikasi jelas</strong><p>Informasi utama disesuaikan dengan jenis produk agar mudah dipahami dan dibandingkan.</p></article>
+          <article><small>02</small><strong>Pilihan lengkap</strong><p>Satu katalog untuk laptop, PC, all-in-one, printer, proyektor, dan scanner.</p></article>
+          <article><small>03</small><strong>Konsultasi langsung</strong><p>Admin membantu mencarikan perangkat berdasarkan kebutuhan dan anggaran.</p></article>
         </div>
       </div>
     </section>
 
-    <section class="section" id="lokasi">
+    <section class="section location-section" id="lokasi">
       <div class="container location-grid">
         <div>
-          <p class="panel-kicker">04 / Lokasi</p>
+          <p class="panel-kicker">04 / Lokasi toko</p>
           <h2>Datang langsung atau konsultasi dulu</h2>
-          <p class="section-lead">Kunjungi toko untuk melihat pilihan produk, menanyakan spesifikasi, dan memilih laptop yang paling sesuai.</p>
-          <div class="address-box">
-            <strong>FS.ID Kajen</strong>
+          <p class="section-lead">Lihat pilihan perangkat di toko, tanyakan spesifikasinya, lalu pilih produk yang paling sesuai.</p>
+          <div class="address-line">
+            <span>FS.ID</span>
             <p>Utara Kantor Wakil Bupati, Jalan Diponegoro No.204B, Kajen, Kabupaten Pekalongan, Jawa Tengah 51161.</p>
           </div>
         </div>
-        <div class="map-panel">
-          <div class="map-grid"></div>
-          <div class="map-pulse"></div>
-          <strong>FS.ID</strong>
-          <span>Jl. Diponegoro No.204B</span>
+        <div class="location-panel" aria-label="Alamat FS.ID">
+          <div class="location-coordinate"><span>FS.ID</span><strong>Jl. Diponegoro No.204B</strong><small>Kajen, Pekalongan</small></div>
+          <a class="btn btn-primary" href="https://www.google.com/maps/search/?api=1&query=Jalan+Diponegoro+No.204B+Kajen+Pekalongan" target="_blank" rel="noreferrer">Buka Petunjuk Arah</a>
         </div>
       </div>
     </section>
 
     <section class="cta-section">
       <div class="container">
-        <h2>Masih bingung pilih laptop yang mana?</h2>
-        <p>Ceritakan kebutuhan panjenengan. Admin FS.ID siap bantu carikan pilihan terbaik sesuai budget.</p>
-        <a class="btn btn-dark" href="https://wa.me/?text=Assalamu%27alaikum%2C%20saya%20mau%20minta%20rekomendasi%20laptop.%20Budget%20saya%20sekitar%20...%20dan%20kebutuhan%20saya%20untuk%20..." target="_blank" rel="noreferrer">Konsultasi via WhatsApp</a>
+        <p class="panel-kicker">Butuh rekomendasi?</p>
+        <h2>Ceritakan perangkat yang sedang dicari</h2>
+        <p>Admin FS.ID siap membantu mencocokkan kebutuhan, spesifikasi, dan anggaran.</p>
+        <a class="btn btn-dark" href="https://wa.me/?text=Assalamu%27alaikum%2C%20saya%20mau%20minta%20rekomendasi%20produk.%20Budget%20saya%20sekitar%20...%20dan%20kebutuhan%20saya%20untuk%20..." target="_blank" rel="noreferrer">Konsultasi via WhatsApp</a>
       </div>
     </section>
   </main>
@@ -157,7 +177,7 @@
     <div class="footer-inner">
       <a class="brandmark" href="index.html"><span>FS</span> FS.ID</a>
       <div class="footer-links">
-        <a href="#brand">Brand</a>
+        <a href="#kategori">Kategori</a>
         <a href="#produk">Produk</a>
         <a href="#lokasi">Lokasi</a>
         <a href="katalog/index.html#/">Katalog</a>
@@ -166,124 +186,7 @@
     </div>
   </footer>
 
-  <script>
-    const sheetCsvUrl = "https://docs.google.com/spreadsheets/d/1TaavUGsH5bmAWPdr2kMgKJCkrfzNoAuOI1OTZnLAsH0/gviz/tq?tqx=out:csv&sheet=Sheet1";
-    const rupiah = value => new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(value || 0);
-    const wa = text => `https://wa.me/?text=${encodeURIComponent(text)}`;
-
-    function escapeHtml(value) {
-      return String(value ?? "").replace(/[&<>"']/g, char => ({
-        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;"
-      })[char]);
-    }
-
-    function parseCsv(text) {
-      const rows = [];
-      let row = [];
-      let cell = "";
-      let quoted = false;
-      for (let index = 0; index < text.length; index += 1) {
-        const char = text[index];
-        const next = text[index + 1];
-        if (char === '"' && quoted && next === '"') {
-          cell += '"';
-          index += 1;
-        } else if (char === '"') quoted = !quoted;
-        else if (char === "," && !quoted) {
-          row.push(cell);
-          cell = "";
-        } else if ((char === "\n" || char === "\r") && !quoted) {
-          if (char === "\r" && next === "\n") index += 1;
-          row.push(cell);
-          if (row.some(value => value.trim())) rows.push(row);
-          row = [];
-          cell = "";
-        } else cell += char;
-      }
-      row.push(cell);
-      if (row.some(value => value.trim())) rows.push(row);
-      return rows;
-    }
-
-    function parsePrice(value) {
-      const clean = String(value || "").replace(/[^\d]/g, "");
-      const hasDecimalSuffix = /,\d{2}\s*$/.test(String(value || ""));
-      return Number((hasDecimalSuffix ? clean.slice(0, -2) : clean) || 0);
-    }
-
-    function slugify(value) {
-      return String(value || "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-    }
-
-    function rowToProduct(row, index) {
-      const brand = row[0]?.trim();
-      const series = row[1]?.trim();
-      const processor = row[2]?.trim();
-      const ram = row[3]?.trim();
-      const storage = row[4]?.trim();
-      const display = row[5]?.trim();
-      const price = parsePrice(row[6]);
-      const features = String(row[9] || "").split(",").map(item => item.trim()).filter(Boolean);
-      if (!brand || !series || !price) return null;
-      const name = `${brand} ${series}`;
-      return {
-        brand, name, processor, ram, storage, display, price,
-        tags: features.slice(0, 2),
-        slug: slugify(`${name}-${processor}-${ram}-${storage}-${index}`)
-      };
-    }
-
-    function productCard(product) {
-      return `
-        <article class="featured-card">
-          <div class="product-visual"><div class="laptop-icon"></div></div>
-          <div class="featured-body">
-            <div class="product-heading"><span>${escapeHtml(product.brand)}</span></div>
-            <h3>${escapeHtml(product.name)}</h3>
-            <p>${escapeHtml([product.processor, product.ram, product.storage, product.display].filter(Boolean).join(" - "))}</p>
-            <div class="tags">${product.tags.map(item => `<small>${escapeHtml(item)}</small>`).join("")}</div>
-            <div class="featured-foot">
-              <strong>${rupiah(product.price)}</strong>
-              <a class="btn btn-light" href="katalog/index.html#/produk/${escapeHtml(product.slug)}">Detail</a>
-            </div>
-          </div>
-        </article>
-      `;
-    }
-
-    function renderLanding(products) {
-      const brands = [...new Set(products.map(item => item.brand).filter(Boolean))];
-      const featured = products.slice(0, 3);
-      const heroProduct = products.find(item => item.brand === "Lenovo") || products[0];
-      document.getElementById("brandCount").textContent = `${brands.length}+`;
-      document.getElementById("productCount").textContent = `${products.length}+`;
-      document.getElementById("featuredProducts").innerHTML = featured.map(productCard).join("");
-
-      if (heroProduct) {
-        document.getElementById("heroProductBrand").textContent = heroProduct.brand;
-        document.getElementById("heroProductName").textContent = heroProduct.name;
-        document.getElementById("heroProductSpec").textContent = [heroProduct.processor, heroProduct.ram, heroProduct.storage, heroProduct.display].filter(Boolean).join(" - ");
-        document.getElementById("heroProductPrice").textContent = rupiah(heroProduct.price);
-      }
-
-      const mini = products.slice(1, 3).map(product => `
-        <a class="mini-card" href="katalog/index.html#/produk/${escapeHtml(product.slug)}">
-          <small>${escapeHtml(product.brand)}</small>
-          <strong>${escapeHtml(product.name)}</strong>
-          <span>${rupiah(product.price)}</span>
-        </a>
-      `).join("");
-      if (mini) document.getElementById("miniProducts").innerHTML = mini;
-
-      const tickerItems = products.slice(0, 10).map(product => `<span>${escapeHtml(product.brand)}</span><b>${escapeHtml(product.name)} - ${rupiah(product.price)}</b>`).join("");
-      if (tickerItems) document.getElementById("landingTicker").innerHTML = tickerItems + tickerItems;
-    }
-
-    fetch(`${sheetCsvUrl}&cache=${Date.now()}`, { cache: "no-store" })
-      .then(response => response.text())
-      .then(text => parseCsv(text).slice(1).map(rowToProduct).filter(Boolean))
-      .then(renderLanding)
-      .catch(error => console.warn(error));
-  </script>
+  <script src="assets/landing.js?v=dynamic-20260627"></script>
 </body>
 </html>
+
