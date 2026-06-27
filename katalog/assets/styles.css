@@ -78,16 +78,40 @@ button, input, select { font: inherit; }
   font-size: 12px;
 }
 
-.nav-links {
+.nav-links,
+.category-tabs {
   display: flex;
   align-items: center;
-  gap: 26px;
   color: rgba(255,255,255,.58);
   font-size: 14px;
   font-weight: 700;
 }
 
 .nav-links a:hover { color: var(--gold); }
+
+.category-tabs {
+  max-width: 1240px;
+  min-height: 46px;
+  margin: 0 auto;
+  padding: 0 20px 10px;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.category-tabs::-webkit-scrollbar { display: none; }
+.category-tabs a {
+  flex: 0 0 auto;
+  padding: 8px 13px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  white-space: nowrap;
+}
+.category-tabs a:hover,
+.category-tabs a.active {
+  color: var(--gold);
+  border-color: var(--gold-line);
+  background: rgba(245,197,24,.07);
+}
 
 .btn {
   min-height: 42px;
@@ -378,7 +402,7 @@ h1 {
 
 .filter-panel {
   position: sticky;
-  top: 88px;
+  top: 132px;
   height: max-content;
   padding: 18px;
 }
@@ -488,6 +512,7 @@ h1 {
   line-height: 1.25;
 }
 .brand-pill,
+.category-pill,
 .status {
   min-height: 28px;
   display: inline-flex;
@@ -499,6 +524,11 @@ h1 {
   font-weight: 900;
 }
 .brand-pill { color: var(--black); background: var(--gold); }
+.category-pill {
+  color: var(--gold);
+  border: 1px solid rgba(245,197,24,.3);
+  background: rgba(245,197,24,.08);
+}
 .status { color: #bfffdc; background: rgba(34,197,94,.13); }
 .status.warn { color: #ffe18b; background: rgba(245,197,24,.13); }
 .status.off { color: #ffb0b0; background: rgba(255,80,80,.14); }
@@ -510,6 +540,25 @@ h1 {
   color: var(--muted);
   font-size: 13px;
   line-height: 1.45;
+}
+.specs span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.specs small {
+  display: block;
+  margin-bottom: 3px;
+  color: var(--muted-2);
+  font-size: 10px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+.product-brand {
+  color: var(--gold);
+  font-family: "Space Mono", monospace;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
 }
 .price {
   color: var(--gold);
@@ -537,6 +586,7 @@ h1 {
   gap: 18px;
 }
 .detail-panel { padding: 24px; }
+.detail-badges { display: flex; flex-wrap: wrap; gap: 8px; }
 .detail-panel h2 { margin: 8px 0 12px; font-size: clamp(28px, 3.4vw, 46px); }
 .detail-image {
   min-height: 430px;
@@ -660,6 +710,8 @@ h1 {
 
 @media (max-width: 980px) {
   .nav-links, .nav-cta { display: none; }
+  .nav { min-height: 58px; }
+  .category-tabs { padding-inline: 14px; }
   .catalog-hero-inner, .catalog-shell, .detail-view, .footer-inner { grid-template-columns: 1fr; }
   .feature-console { max-width: 620px; }
   .filter-panel { position: static; }
@@ -677,3 +729,4 @@ h1 {
   .catalog-zone { padding: 36px 14px 58px; }
   .btn { width: 100%; }
 }
+
