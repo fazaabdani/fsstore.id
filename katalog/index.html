@@ -3,27 +3,28 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Katalog Produk Laptop FS.ID</title>
-  <meta name="description" content="Katalog produk laptop FS.ID untuk Lenovo, Acer, ASUS, Advan, Axioo, dan pilihan laptop terbaru dari toko.">
+  <title>Katalog Produk FS.ID</title>
+  <meta name="description" content="Katalog laptop, komputer PC, all-in-one, printer, proyektor, dan scanner FS.ID.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/styles.css?v=gallery-20260617">
+  <link rel="stylesheet" href="assets/styles.css?v=category-20260627">
 </head>
 <body class="catalog-page">
   <div class="hazard-strip"></div>
   <header class="site-header">
     <nav class="nav" aria-label="Navigasi katalog">
       <a class="brandmark" href="../index.html"><span>FS</span> FS.ID</a>
-      <div class="nav-links">
-        <a href="#/">Semua produk</a>
-        <a href="#/brand/Lenovo">Lenovo</a>
-        <a href="#/brand/Acer">Acer</a>
-        <a href="#/brand/ASUS">ASUS</a>
-        <a href="#/brand/Advan">Advan</a>
-        <a href="#/brand/Axioo">Axioo</a>
-      </div>
-      <a class="btn btn-primary nav-cta" href="https://wa.me/?text=Assalamu%27alaikum%2C%20saya%20mau%20konsultasi%20pilihan%20laptop%20di%20FS.ID.%20Kebutuhan%20saya%20untuk%20..." target="_blank" rel="noreferrer">Konsultasi</a>
+      <a class="btn btn-primary nav-cta" href="https://wa.me/?text=Assalamu%27alaikum%2C%20saya%20mau%20konsultasi%20produk%20di%20FS.ID.%20Kebutuhan%20saya%20untuk%20..." target="_blank" rel="noreferrer">Konsultasi</a>
+    </nav>
+    <nav class="category-tabs" aria-label="Kategori produk">
+      <a class="active" href="#/" data-category-tab="">Semua Produk</a>
+      <a href="#/kategori/Laptop" data-category-tab="Laptop">Laptop</a>
+      <a href="#/kategori/PC" data-category-tab="PC">PC</a>
+      <a href="#/kategori/All-in-One" data-category-tab="All-in-One">All-in-One</a>
+      <a href="#/kategori/Printer" data-category-tab="Printer">Printer</a>
+      <a href="#/kategori/Proyektor" data-category-tab="Proyektor">Proyektor</a>
+      <a href="#/kategori/Scanner" data-category-tab="Scanner">Scanner</a>
     </nav>
   </header>
 
@@ -35,16 +36,16 @@
       <div class="container catalog-hero-inner">
         <div>
           <p class="terminal-label"><span></span> katalog.fsstore.id / live product</p>
-          <h1>Katalog Laptop FS.ID yang lebih dinamis.</h1>
-          <p class="section-lead">Data produk, harga, dan foto utama diambil dari Google Sheet toko. Tinggal update Sheet, katalog ikut bergerak.</p>
+          <h1>Katalog Produk FS.ID yang lebih dinamis.</h1>
+          <p class="section-lead">Temukan laptop, PC, all-in-one, printer, proyektor, dan scanner. Data produk, harga, serta foto mengikuti Google Sheet toko.</p>
           <div class="hero-actions">
             <a class="btn btn-primary" href="#catalogView">Lihat Produk</a>
-            <a class="btn btn-whatsapp" href="https://wa.me/?text=Assalamu%27alaikum%2C%20saya%20mau%20konsultasi%20pilihan%20laptop%20di%20FS.ID.%20Kebutuhan%20saya%20untuk%20..." target="_blank" rel="noreferrer">Konsultasi WhatsApp</a>
+            <a class="btn btn-whatsapp" href="https://wa.me/?text=Assalamu%27alaikum%2C%20saya%20mau%20konsultasi%20produk%20di%20FS.ID.%20Kebutuhan%20saya%20untuk%20..." target="_blank" rel="noreferrer">Konsultasi WhatsApp</a>
           </div>
           <div class="hero-stats">
-            <div><strong id="brandCount">5+</strong><small>Brand aktif</small></div>
+            <div><strong id="categoryCount">6</strong><small>Kategori produk</small></div>
             <div><strong id="totalProducts">10+</strong><small>Produk katalog</small></div>
-            <div><strong id="availableCount">Live</strong><small>Update dari Sheet</small></div>
+            <div><strong id="sheetStatus">Live</strong><small>Update dari Sheet</small></div>
           </div>
         </div>
         <aside class="feature-console" aria-label="Sorotan katalog">
@@ -59,7 +60,7 @@
             </div>
           </div>
           <div class="console-mini">
-            <div><small>FILTER</small><strong>Brand / RAM / Storage</strong></div>
+            <div><small>FILTER</small><strong>Kategori / Brand / Harga</strong></div>
             <div><small>FOTO</small><strong>Drive thumbnail</strong></div>
           </div>
         </aside>
@@ -78,14 +79,15 @@
         <aside class="filter-panel" aria-label="Filter produk">
           <p class="panel-kicker">control panel</p>
           <h2>Filter produk</h2>
+          <div class="field"><label for="category">Kategori</label><select id="category"><option value="">Semua kategori</option></select></div>
           <div class="field"><label for="search">Search produk</label><input id="search" type="search" placeholder="Cari nama, brand, seri..."></div>
           <div class="field"><label for="brand">Brand</label><select id="brand"><option value="">Semua brand</option></select></div>
           <div class="field"><label for="price">Harga</label><select id="price"><option value="">Semua harga</option><option value="0-3999999">Di bawah 4 juta</option><option value="4000000-5000000">4-5 juta</option><option value="5000000-6000000">5-6 juta</option><option value="6000000-8000000">6-8 juta</option><option value="8000001-99999999">Di atas 8 juta</option></select></div>
-          <div class="field"><label for="processor">Processor</label><select id="processor"><option value="">Semua processor</option></select></div>
-          <div class="field"><label for="ram">RAM</label><select id="ram"><option value="">Semua RAM</option></select></div>
-          <div class="field"><label for="storage">Storage</label><select id="storage"><option value="">Semua storage</option></select></div>
-          <div class="field"><label for="screen">Ukuran layar</label><select id="screen"><option value="">Semua ukuran</option></select></div>
-          <div class="field"><label for="need">Kebutuhan</label><select id="need"><option value="">Semua kebutuhan</option></select></div>
+          <div class="field spec-filter hidden" data-spec-filter="0"><label for="processor" data-spec-label="0">Processor</label><select id="processor"><option value="">Semua processor</option></select></div>
+          <div class="field spec-filter hidden" data-spec-filter="1"><label for="ram" data-spec-label="1">RAM</label><select id="ram"><option value="">Semua RAM</option></select></div>
+          <div class="field spec-filter hidden" data-spec-filter="2"><label for="storage" data-spec-label="2">Storage</label><select id="storage"><option value="">Semua storage</option></select></div>
+          <div class="field spec-filter hidden" data-spec-filter="3"><label for="screen" data-spec-label="3">Ukuran layar</label><select id="screen"><option value="">Semua ukuran</option></select></div>
+          <div class="field"><label for="need">Fitur</label><select id="need"><option value="">Semua fitur</option></select></div>
           <div class="field"><label for="status">Status ketersediaan</label><select id="status"><option value="">Semua status</option></select></div>
           <button class="btn btn-light" id="resetFilters" type="button">Reset filter</button>
         </aside>
@@ -96,7 +98,7 @@
               <p class="panel-kicker">hasil pencarian</p>
               <h2 id="resultCount">Memuat produk...</h2>
             </div>
-            <a class="btn btn-whatsapp" href="https://wa.me/?text=Assalamu%27alaikum%2C%20saya%20mau%20konsultasi%20pilihan%20laptop%20di%20FS.ID.%20Kebutuhan%20saya%20untuk%20..." target="_blank" rel="noreferrer">Konsultasi Produk</a>
+            <a class="btn btn-whatsapp" href="https://wa.me/?text=Assalamu%27alaikum%2C%20saya%20mau%20konsultasi%20produk%20di%20FS.ID.%20Kebutuhan%20saya%20untuk%20..." target="_blank" rel="noreferrer">Konsultasi Produk</a>
           </div>
           <div id="productGrid" class="product-grid"></div>
         </section>
@@ -124,11 +126,11 @@
     <div class="footer-inner">
       <div>
         <h3>FS.ID</h3>
-        <p>Penyedia laptop untuk kebutuhan personal, pendidikan, profesional, dan bisnis.</p>
+        <p>Penyedia perangkat teknologi untuk kebutuhan personal, pendidikan, profesional, dan bisnis.</p>
       </div>
       <div>
-        <strong>Brand</strong>
-        <p>Lenovo, Acer, ASUS, Advan, Axioo, dan produk toko terbaru.</p>
+        <strong>Kategori</strong>
+        <p>Laptop, PC, all-in-one, printer, proyektor, scanner, dan produk toko terbaru.</p>
       </div>
       <div>
         <strong>Katalog</strong>
@@ -137,7 +139,8 @@
     </div>
   </footer>
 
-  <script src="assets/products.js?v=gallery-20260617"></script>
-  <script src="assets/catalog.js?v=gallery-20260617"></script>
+  <script src="assets/products.js?v=category-20260627"></script>
+  <script src="assets/catalog.js?v=category-20260627"></script>
 </body>
 </html>
+
