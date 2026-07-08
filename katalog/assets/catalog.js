@@ -12,7 +12,7 @@ const specFilterIds = ["processor", "ram", "storage", "screen"];
 const fields = Object.fromEntries(filterIds.map(id => [id, document.getElementById(id)]));
 const sheetCsvUrl = "https://docs.google.com/spreadsheets/d/1TaavUGsH5bmAWPdr2kMgKJCkrfzNoAuOI1OTZnLAsH0/gviz/tq?tqx=out:csv&sheet=Sheet1";
 const rupiah = value => new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(value);
-const wa = text => `https://wa.me/?text=${encodeURIComponent(text)}`;
+const wa = text => `https://wa.me/6285182661773?text=${encodeURIComponent(text)}`;
 let sheetLoading = true;
 
 function escapeHtml(value) {
