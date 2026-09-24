@@ -5,17 +5,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Katalog Produk FS.ID</title>
   <meta name="description" content="Katalog laptop, komputer PC, all-in-one, printer, proyektor, dan scanner FS.ID.">
+  <meta name="theme-color" content="#060606">
+  <link rel="canonical" href="https://fsstore.id/katalog/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="FS.ID">
+  <meta property="og:title" content="Katalog Produk FS.ID">
+  <meta property="og:description" content="Cari dan bandingkan perangkat, harga, status, dan spesifikasi terbaru dari FS.ID.">
+  <meta property="og:url" content="https://fsstore.id/katalog/">
+  <meta property="og:image" content="https://fsstore.id/katalog/assets/fsid-premium-hero.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Katalog Produk FS.ID">
+  <meta name="twitter:description" content="Cari dan bandingkan perangkat, harga, status, dan spesifikasi terbaru dari FS.ID.">
+  <meta name="twitter:image" content="https://fsstore.id/katalog/assets/fsid-premium-hero.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/styles.css?v=category-20260627">
+  <link rel="stylesheet" href="assets/styles.css?v=ux-20260924">
 </head>
 <body class="catalog-page">
   <div class="hazard-strip"></div>
   <header class="site-header">
     <nav class="nav" aria-label="Navigasi katalog">
       <a class="brandmark" href="../index.html"><span>FS</span> FS.ID</a>
-      <a class="btn btn-primary nav-cta" href="https://wa.me/6285182661773?text=Assalamu%27alaikum%2C%20saya%20mau%20konsultasi%20produk%20di%20FS.ID.%20Kebutuhan%20saya%20untuk%20..." target="_blank" rel="noreferrer">Konsultasi</a>
+      <a class="btn btn-primary nav-cta" href="https://wa.me/6285182661773?text=Assalamu%27alaikum%2C%20saya%20ingin%20konsultasi%20produk%20di%20FS.ID.%20Mohon%20rekomendasi%20sesuai%20kebutuhan%20dan%20anggaran%20saya." target="_blank" rel="noopener noreferrer">Konsultasi</a>
     </nav>
     <nav class="category-tabs" aria-label="Kategori produk">
       <a class="active" href="#/" data-category-tab="">Semua Produk</a>
@@ -40,12 +52,12 @@
           <p class="section-lead">Temukan laptop, PC, all-in-one, printer, proyektor, dan scanner. Data produk, harga, serta foto mengikuti Google Sheet toko.</p>
           <div class="hero-actions">
             <a class="btn btn-primary" href="#catalogView">Lihat Produk</a>
-            <a class="btn btn-whatsapp" href="https://wa.me/6285182661773?text=Assalamu%27alaikum%2C%20saya%20mau%20konsultasi%20produk%20di%20FS.ID.%20Kebutuhan%20saya%20untuk%20..." target="_blank" rel="noreferrer">Konsultasi WhatsApp</a>
+            <a class="btn btn-whatsapp" href="https://wa.me/6285182661773?text=Assalamu%27alaikum%2C%20saya%20ingin%20konsultasi%20produk%20di%20FS.ID.%20Mohon%20rekomendasi%20sesuai%20kebutuhan%20dan%20anggaran%20saya." target="_blank" rel="noopener noreferrer">Konsultasi WhatsApp</a>
           </div>
           <div class="hero-stats">
-            <div><strong id="categoryCount">6</strong><small>Kategori produk</small></div>
-            <div><strong id="totalProducts">10+</strong><small>Produk katalog</small></div>
-            <div><strong id="sheetStatus">Live</strong><small>Update dari Sheet</small></div>
+            <div><strong id="categoryCount">—</strong><small>Kategori produk</small></div>
+            <div><strong id="totalProducts">—</strong><small>Produk katalog</small></div>
+            <div><strong id="sheetStatus">Memuat</strong><small>Update dari Sheet</small></div>
           </div>
         </div>
         <aside class="feature-console" aria-label="Sorotan katalog">
@@ -80,7 +92,7 @@
           <p class="panel-kicker">control panel</p>
           <h2>Filter produk</h2>
           <div class="field"><label for="category">Kategori</label><select id="category"><option value="">Semua kategori</option></select></div>
-          <div class="field"><label for="search">Search produk</label><input id="search" type="search" placeholder="Cari nama, brand, seri..."></div>
+          <div class="field"><label for="search">Cari produk</label><input id="search" type="search" placeholder="Cari nama, merek, seri, atau spesifikasi..." autocomplete="off"></div>
           <div class="field"><label for="brand">Brand</label><select id="brand"><option value="">Semua brand</option></select></div>
           <div class="field"><label for="price">Harga</label><select id="price"><option value="">Semua harga</option><option value="0-3999999">Di bawah 4 juta</option><option value="4000000-5000000">4-5 juta</option><option value="5000000-6000000">5-6 juta</option><option value="6000000-8000000">6-8 juta</option><option value="8000001-99999999">Di atas 8 juta</option></select></div>
           <div class="field spec-filter hidden" data-spec-filter="0"><label for="processor" data-spec-label="0">Processor</label><select id="processor"><option value="">Semua processor</option></select></div>
@@ -96,11 +108,14 @@
           <div class="catalog-top">
             <div>
               <p class="panel-kicker">hasil pencarian</p>
-              <h2 id="resultCount">Memuat produk...</h2>
+              <h2 id="resultCount" aria-live="polite">Memuat produk...</h2>
             </div>
-            <a class="btn btn-whatsapp" href="https://wa.me/6285182661773?text=Assalamu%27alaikum%2C%20saya%20mau%20konsultasi%20produk%20di%20FS.ID.%20Kebutuhan%20saya%20untuk%20..." target="_blank" rel="noreferrer">Konsultasi Produk</a>
+            <a class="btn btn-whatsapp" href="https://wa.me/6285182661773?text=Assalamu%27alaikum%2C%20saya%20ingin%20konsultasi%20produk%20di%20FS.ID.%20Mohon%20rekomendasi%20sesuai%20kebutuhan%20dan%20anggaran%20saya." target="_blank" rel="noopener noreferrer">Konsultasi Produk</a>
           </div>
-          <div id="productGrid" class="product-grid"></div>
+          <div id="catalogStatus" class="catalog-status" role="status" aria-live="polite"></div>
+          <div id="productGrid" class="product-grid" aria-live="polite">
+            <div class="catalog-loading" role="status">Menyiapkan produk terbaru...</div>
+          </div>
         </section>
       </div>
 
@@ -140,7 +155,7 @@
   </footer>
 
   <script src="assets/products.js?v=category-20260627"></script>
-  <script src="assets/catalog.js?v=category-20260627"></script>
+  <script src="assets/catalog.js?v=ux-20260924"></script>
 </body>
 </html>
 

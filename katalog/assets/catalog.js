@@ -13,7 +13,11 @@ const fields = Object.fromEntries(filterIds.map(id => [id, document.getElementBy
 const sheetCsvUrl = "https://docs.google.com/spreadsheets/d/1TaavUGsH5bmAWPdr2kMgKJCkrfzNoAuOI1OTZnLAsH0/gviz/tq?tqx=out:csv&sheet=Sheet1";
 const rupiah = value => new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(value);
 const wa = text => `https://wa.me/6285182661773?text=${encodeURIComponent(text)}`;
+const fallbackImage = "assets/fsid-laptop-display.png";
 let sheetLoading = true;
+let usingFallback = false;
+let products = [];
+let fallbackProducts = [];
 
 function escapeHtml(value) {
   return String(value ?? "").replace(/[&<>"']/g, char => ({
@@ -23,6 +27,30 @@ function escapeHtml(value) {
     '"': "&quot;",
     "'": "&#039;"
   })[char]);
+}
+
+function displayText(value) {
+  return String(value ?? "")
+    .replace(/\bRAM\s+RAM\b/gi, "RAM")
+    .replace(/SCANCER/gi, "SCANNER")
+    .replace(/PIGMANT/gi, "PIGMENT")
+    .replace(/SPLIT\s+SCREN/gi, "SPLIT SCREEN")
+    .replace(/BISACETAKLANGSUNG\s+DARI\s+HP/gi, "BISA CETAK LANGSUNG DARI HP")
+    .replace(/TOUCHSREEN/gi, "TOUCHSCREEN")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+}
+
+function displaySpecValue(label, value) {
+  const text = displayText(value);
+  const labelText = displayText(label);
+  if (labelText && text.toLowerCase().startsWith(`${labelText.toLowerCase()} `)) {
+    return text.slice(labelText.length).trim();
+  }
+  if (labelText.toLowerCase() === "ukuran kertas" && text.toLowerCase().startsWith("ukuran ")) {
+    return text.slice("ukuran".length).trim();
+  }
+  return text;
 }
 
 function parseCsv(text) {
@@ -169,14 +197,14 @@ function normalizeFallbackProduct(product) {
   return { ...product, kategori, specs, fitur, cocok_untuk: fitur.slice(0, 3) };
 }
 
-let products = (Array.isArray(window.FSID_PRODUCTS) ? window.FSID_PRODUCTS : []).map(normalizeFallbackProduct);
+fallbackProducts = (Array.isArray(window.FSID_PRODUCTS) ? window.FSID_PRODUCTS : []).map(normalizeFallbackProduct);
 
 function productImage(product, className = "product-image product-visual") {
-  const imageUrl = product.foto_dinamis?.[0] || driveImageUrl(product.link_foto);
+  const imageUrl = product.foto_dinamis?.[0] || driveImageUrl(product.link_foto) || product.foto_utama || fallbackImage;
   if (!imageUrl) {
-    return `<div class="${className}" aria-label="${escapeHtml(product.nama_produk)}"><div class="laptop-icon"></div></div>`;
+    return `<div class="${className}" aria-label="${escapeHtml(displayText(product.nama_produk))}"><div class="laptop-icon"></div></div>`;
   }
-  return `<div class="${className}" aria-label="${escapeHtml(product.nama_produk)}"><img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(product.nama_produk)}" loading="lazy" referrerpolicy="no-referrer" onerror="const box=this.parentElement;this.remove();const fallback=document.createElement('div');fallback.className='laptop-icon';box.classList.add('product-visual');box.appendChild(fallback);"></div>`;
+  return `<div class="${className}" aria-label="${escapeHtml(displayText(product.nama_produk))}"><img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(displayText(product.nama_produk))}" loading="lazy" referrerpolicy="no-referrer" onerror="this.hidden=true;this.nextElementSibling.hidden=false;"><div class="image-fallback" hidden><span>${escapeHtml(displayText(product.kategori))}</span></div></div>`;
 }
 
 function productGallery(product) {
@@ -184,7 +212,8 @@ function productGallery(product) {
   if (!images.length) return productImage(product, "detail-image detail-visual");
   const slides = images.map((image, index) => `
     <figure class="gallery-slide">
-      <img src="${escapeHtml(image)}" alt="${escapeHtml(`${product.nama_produk} foto ${index + 1}`)}" loading="${index === 0 ? "eager" : "lazy"}" referrerpolicy="no-referrer">
+      <img src="${escapeHtml(image)}" alt="${escapeHtml(`${displayText(product.nama_produk)} foto ${index + 1}`)}" loading="${index === 0 ? "eager" : "lazy"}" referrerpolicy="no-referrer" onerror="this.hidden=true;this.nextElementSibling.hidden=false;">
+      <div class="image-fallback" hidden><span>${escapeHtml(displayText(product.kategori))}</span></div>
     </figure>
   `).join("");
   const dots = images.map((_, index) => `<button class="gallery-dot${index === 0 ? " active" : ""}" type="button" aria-label="Lihat foto ${index + 1}" data-slide="${index}"></button>`).join("");
@@ -216,7 +245,7 @@ function sheetRowToProduct(row, index, categoryIndex) {
   const brand = resolveBrand(rawBrand, series, kategori);
   const name = productName(rawBrand, series, kategori);
   const labels = specConfig[kategori];
-  const summary = specs.map((value, specIndex) => value ? `${labels[specIndex]} ${value}` : "").filter(Boolean).join(", ");
+  const summary = specs.map((value, specIndex) => value ? `${labels[specIndex]} ${displaySpecValue(labels[specIndex], value)}` : "").filter(Boolean).join(", ");
   return {
     id_produk: `FS-SHEET-${String(index).padStart(3, "0")}`,
     nama_produk: name,
@@ -263,7 +292,7 @@ function unique(values) {
 function fillSelect(id, values, placeholder) {
   const select = fields[id];
   const current = select.value;
-  select.innerHTML = `<option value="">${escapeHtml(placeholder)}</option>` + values.map(value => `<option value="${escapeHtml(value)}">${escapeHtml(value)}</option>`).join("");
+  select.innerHTML = `<option value="">${escapeHtml(placeholder)}</option>` + values.map(value => `<option value="${escapeHtml(value)}">${escapeHtml(displayText(value))}</option>`).join("");
   if ([...select.options].some(option => option.value === current)) select.value = current;
 }
 
@@ -300,45 +329,66 @@ function hydrateFilters() {
 function updateCatalogChrome() {
   const categories = unique(products.map(item => item.kategori));
   const featured = products.find(item => String(item.status_ketersediaan).toLowerCase().includes("tersedia")) || products[0];
-  setText("categoryCount", categories.length);
-  setText("totalProducts", `${products.length}+`);
-  setText("sheetStatus", "Live");
+  setText("categoryCount", products.length ? categories.length : "—");
+  setText("totalProducts", products.length ? `${products.length}+` : "—");
+  setText("sheetStatus", sheetLoading ? "Memuat" : usingFallback ? "Cadangan" : "Live");
   if (featured) {
-    setText("featureBrand", `${featured.kategori} / ${featured.brand || "FS.ID"}`);
-    setText("featureName", featured.nama_produk || "Produk FS.ID");
-    setText("featureSpec", featured.specs.filter(Boolean).join(" - "));
+    setText("featureBrand", `${displayText(featured.kategori)} / ${displayText(featured.brand || "FS.ID")}`);
+    setText("featureName", displayText(featured.nama_produk || "Produk FS.ID"));
+    setText("featureSpec", featured.specs.filter(Boolean).map(displayText).join(" - "));
     setText("featurePrice", rupiah(featured.harga || 0));
-    setText("featureStatus", featured.status_ketersediaan || "Cek produk");
+    setText("featureStatus", displayText(featured.status_ketersediaan || "Cek produk"));
+  } else if (sheetLoading) {
+    setText("featureBrand", "FS.ID / LIVE PRODUCT");
+    setText("featureName", "Menyiapkan katalog...");
+    setText("featureSpec", "Data produk sedang diambil dari Sheet toko.");
+    setText("featurePrice", "Live");
+    setText("featureStatus", "Memuat");
   }
   const ticker = document.getElementById("tickerTrack");
   if (ticker) {
-    const items = products.slice(0, 12).map(product => `<span>${escapeHtml(product.kategori)}</span><b>${escapeHtml(product.nama_produk)} - ${rupiah(product.harga || 0)}</b>`).join("");
-    ticker.innerHTML = items + items;
+    const items = products.slice(0, 12).map(product => `<span>${escapeHtml(displayText(product.kategori))}</span><b>${escapeHtml(displayText(product.nama_produk))} - ${rupiah(product.harga || 0)}</b>`).join("");
+    if (items) ticker.innerHTML = items + items;
   }
+}
+
+function setCatalogStatus(message = "", showRetry = false, isError = false) {
+  const status = document.getElementById("catalogStatus");
+  if (!status) return;
+  status.className = `catalog-status${isError ? " is-error" : ""}${message ? " is-visible" : ""}`;
+  status.innerHTML = message
+    ? `<span>${escapeHtml(message)}</span>${showRetry ? `<button class="btn btn-light" id="retrySheet" type="button">Coba lagi</button>` : ""}`
+    : "";
+  if (showRetry) document.getElementById("retrySheet").addEventListener("click", loadCatalog);
+}
+
+function setCatalogControlsDisabled(disabled) {
+  filterIds.forEach(id => { fields[id].disabled = disabled; });
+  document.getElementById("resetFilters").disabled = disabled;
 }
 
 function productSpecs(product, detail = false) {
   const labels = labelsFor(product);
   return product.specs.map((value, index) => value ? `
-    <${detail ? "div" : "span"}><small>${escapeHtml(labels[index])}</small>${escapeHtml(value)}</${detail ? "div" : "span"}>
+    <${detail ? "div" : "span"}><small>${escapeHtml(labels[index])}</small>${escapeHtml(displaySpecValue(labels[index], value))}</${detail ? "div" : "span"}>
   ` : "").join("");
 }
 
 function productCard(product) {
-  const tags = product.cocok_untuk.map(item => `<span class="tag">${escapeHtml(item)}</span>`).join("");
+  const tags = product.cocok_untuk.map(item => `<span class="tag">${escapeHtml(displayText(item))}</span>`).join("");
   return `
     <article class="product-card">
       ${productImage(product)}
       <div class="product-body">
-        <div class="product-title"><h3>${escapeHtml(product.nama_produk)}</h3><span class="category-pill">${escapeHtml(product.kategori)}</span></div>
-        <div class="product-brand">${escapeHtml(product.brand)}</div>
+        <div class="product-title"><h3>${escapeHtml(displayText(product.nama_produk))}</h3><span class="category-pill">${escapeHtml(displayText(product.kategori))}</span></div>
+        <div class="product-brand">${escapeHtml(displayText(product.brand))}</div>
         <div class="specs">${productSpecs(product)}</div>
-        <span class="status ${statusClass(product.status_ketersediaan)}">${escapeHtml(product.status_ketersediaan)}</span>
+        <span class="status ${statusClass(product.status_ketersediaan)}">${escapeHtml(displayText(product.status_ketersediaan))}</span>
         <div class="price">${rupiah(product.harga)}</div>
         ${tags ? `<div class="tags">${tags}</div>` : ""}
         <div class="card-actions">
           <a class="btn btn-light" href="#/produk/${escapeHtml(product.slug_produk)}">Lihat Detail</a>
-          <a class="btn btn-whatsapp" href="${wa(`Assalamu'alaikum, saya mau konsultasi produk ${product.nama_produk}. Apakah ketersediaan dan harganya masih sesuai katalog?`)}" target="_blank" rel="noreferrer">Konsultasi</a>
+          <a class="btn btn-whatsapp" href="${wa(`Assalamu'alaikum, saya ingin konsultasi produk ${displayText(product.nama_produk)}. Apakah ketersediaan dan harganya masih sesuai katalog?`)}" target="_blank" rel="noopener noreferrer">Konsultasi</a>
         </div>
       </div>
     </article>
@@ -363,7 +413,10 @@ function matches(product) {
 
 function updateCategoryTabs() {
   document.querySelectorAll("[data-category-tab]").forEach(tab => {
-    tab.classList.toggle("active", tab.dataset.categoryTab === fields.category.value);
+    const active = tab.dataset.categoryTab === fields.category.value;
+    tab.classList.toggle("active", active);
+    if (active) tab.setAttribute("aria-current", "page");
+    else tab.removeAttribute("aria-current");
   });
   const activeTab = document.querySelector("[data-category-tab].active");
   const tabBar = activeTab?.parentElement;
@@ -381,10 +434,15 @@ function renderCatalog() {
   applyCategoryRoute();
   configureSpecFilters(fields.category.value);
   updateCategoryTabs();
+  if (sheetLoading) {
+    document.getElementById("resultCount").textContent = "Menyiapkan katalog...";
+    document.getElementById("productGrid").innerHTML = `<div class="catalog-loading" role="status" aria-live="polite">Memuat produk terbaru<span class="loading-dots" aria-hidden="true">...</span></div>`;
+    return;
+  }
   const filtered = products.filter(matches);
   const suffix = fields.category.value ? ` dalam kategori ${fields.category.value}` : "";
   document.getElementById("resultCount").textContent = `${filtered.length} produk ditemukan${suffix}`;
-  document.getElementById("productGrid").innerHTML = filtered.map(productCard).join("") || `<div class="detail-panel"><strong>Produk belum ditemukan.</strong><p>Ubah filter atau konsultasikan kebutuhan panjenengan dengan admin FS.ID.</p></div>`;
+  document.getElementById("productGrid").innerHTML = filtered.map(productCard).join("") || `<div class="detail-panel empty-state"><strong>Produk belum ditemukan.</strong><p>Ubah filter atau konsultasikan kebutuhan Anda dengan admin FS.ID.</p><a class="btn btn-whatsapp" href="${wa("Assalamu'alaikum, saya ingin dibantu mencari produk yang sesuai kebutuhan saya.")}" target="_blank" rel="noopener noreferrer">Konsultasi via WhatsApp</a></div>`;
 }
 
 function renderDetail(slug) {
@@ -398,25 +456,25 @@ function renderDetail(slug) {
     location.hash = "#/";
     return;
   }
-  const tags = product.fitur.map(item => `<span class="tag">${escapeHtml(item)}</span>`).join("");
+  const tags = product.fitur.map(item => `<span class="tag">${escapeHtml(displayText(item))}</span>`).join("");
   document.getElementById("detailContent").innerHTML = `
     ${productGallery(product)}
     <article class="detail-panel">
-      <div class="detail-badges"><span class="category-pill">${escapeHtml(product.kategori)}</span><span class="brand-pill">${escapeHtml(product.brand)}</span></div>
-      <h2>${escapeHtml(product.nama_produk)}</h2>
-      <p>${escapeHtml(product.deskripsi_singkat)}</p>
+      <div class="detail-badges"><span class="category-pill">${escapeHtml(displayText(product.kategori))}</span><span class="brand-pill">${escapeHtml(displayText(product.brand))}</span></div>
+      <h2>${escapeHtml(displayText(product.nama_produk))}</h2>
+      <p>${escapeHtml(displayText(product.deskripsi_singkat))}</p>
       <div class="price">${rupiah(product.harga)}</div>
-      <span class="status ${statusClass(product.status_ketersediaan)}">${escapeHtml(product.status_ketersediaan)}</span>
+      <span class="status ${statusClass(product.status_ketersediaan)}">${escapeHtml(displayText(product.status_ketersediaan))}</span>
       <div class="detail-specs">
         ${productSpecs(product, true)}
-        <div><small>Garansi</small>${escapeHtml(product.garansi)}</div>
+        <div><small>Garansi</small>${escapeHtml(displayText(product.garansi))}</div>
         <div><small>Update</small>${escapeHtml(product.tanggal_update)}</div>
       </div>
       ${tags ? `<h3>Fitur tambahan</h3><div class="tags">${tags}</div>` : ""}
       <h3>Ringkasan spesifikasi</h3>
-      <ul>${product.kelebihan.map(item => `<li>${escapeHtml(item)}</li>`).join("")}</ul>
-      ${product.link_foto ? `<a class="btn btn-light" href="${escapeHtml(product.link_foto.split("\n")[0])}" target="_blank" rel="noreferrer">Lihat Foto Produk</a>` : ""}
-      <a class="btn btn-whatsapp" href="${wa(`Assalamu'alaikum, saya mau konsultasi produk ${product.nama_produk}. Apakah ketersediaan dan harganya masih sesuai katalog?`)}" target="_blank" rel="noreferrer">Konsultasi WhatsApp</a>
+      <ul>${product.kelebihan.map(item => `<li>${escapeHtml(displayText(item))}</li>`).join("")}</ul>
+      ${product.link_foto ? `<a class="btn btn-light" href="${escapeHtml(product.link_foto.split("\n")[0])}" target="_blank" rel="noopener noreferrer">Lihat Foto Produk</a>` : ""}
+      <a class="btn btn-whatsapp" href="${wa(`Assalamu'alaikum, saya ingin konsultasi produk ${displayText(product.nama_produk)}. Apakah ketersediaan dan harganya masih sesuai katalog?`)}" target="_blank" rel="noopener noreferrer">Konsultasi WhatsApp</a>
     </article>
   `;
   initGallery();
@@ -494,21 +552,39 @@ window.addEventListener("hashchange", () => {
   route();
 });
 
-hydrateFilters();
-updateCatalogChrome();
-route();
+function refreshCatalogView() {
+  applyCategoryRoute();
+  hydrateFilters();
+  updateCatalogChrome();
+  route();
+}
 
-loadProductsFromSheet()
-  .then(() => {
-    sheetLoading = false;
-    applyCategoryRoute();
-    hydrateFilters();
-    updateCatalogChrome();
-    route();
-  })
-  .catch(error => {
-    sheetLoading = false;
-    setText("sheetStatus", "Fallback");
-    console.warn(error);
-  });
+function loadCatalog() {
+  sheetLoading = true;
+  usingFallback = false;
+  products = [];
+  setCatalogControlsDisabled(true);
+  setCatalogStatus("Mengambil data produk terbaru dari Sheet toko...", false, false);
+  refreshCatalogView();
+
+  return loadProductsFromSheet()
+    .then(() => {
+      sheetLoading = false;
+      usingFallback = false;
+      setCatalogControlsDisabled(false);
+      setCatalogStatus();
+      refreshCatalogView();
+    })
+    .catch(error => {
+      sheetLoading = false;
+      usingFallback = true;
+      products = fallbackProducts;
+      setCatalogControlsDisabled(false);
+      setCatalogStatus("Data live belum dapat dimuat. Menampilkan data cadangan yang tersedia.", true, true);
+      refreshCatalogView();
+      console.warn(error);
+    });
+}
+
+loadCatalog();
 

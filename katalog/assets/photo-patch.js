@@ -51,7 +51,7 @@
             <div class="tags">${product.cocok_untuk.map(item => `<span class="tag">${escapeHtml(item)}</span>`).join("")}</div>
             <div class="card-actions">
               <a class="btn btn-light" href="#/produk/${escapeHtml(product.slug_produk)}">Lihat Detail</a>
-              <a class="btn btn-whatsapp" href="${wa(`Assalamu'alaikum, saya mau konsultasi produk ${product.nama_produk}. Apakah ketersediaan dan harganya masih sesuai katalog?`)}" target="_blank" rel="noreferrer">Konsultasi</a>
+              <a class="btn btn-whatsapp" href="${wa(`Assalamu'alaikum, saya ingin konsultasi produk ${product.nama_produk}. Apakah ketersediaan dan harganya masih sesuai katalog?`)}" target="_blank" rel="noopener noreferrer">Konsultasi</a>
             </div>
           </div>
         </article>
@@ -90,8 +90,8 @@
           <div class="tags">${product.kategori_kebutuhan.map(item => `<span class="tag">${escapeHtml(item)}</span>`).join("")}</div>
           <h3>Kelebihan produk</h3>
           <ul>${product.kelebihan.map(item => `<li>${escapeHtml(item)}</li>`).join("")}</ul>
-          ${product.link_foto ? `<a class="btn btn-light" href="${escapeHtml(product.link_foto)}" target="_blank" rel="noreferrer">Lihat Foto Produk</a>` : ""}
-          <a class="btn btn-whatsapp" href="${wa(`Assalamu'alaikum, saya mau konsultasi produk ${product.nama_produk}. Apakah ketersediaan dan harganya masih sesuai katalog?`)}" target="_blank" rel="noreferrer">Konsultasi WhatsApp</a>
+          ${product.link_foto ? `<a class="btn btn-light" href="${escapeHtml(product.link_foto)}" target="_blank" rel="noopener noreferrer">Lihat Foto Produk</a>` : ""}
+          <a class="btn btn-whatsapp" href="${wa(`Assalamu'alaikum, saya ingin konsultasi produk ${product.nama_produk}. Apakah ketersediaan dan harganya masih sesuai katalog?`)}" target="_blank" rel="noopener noreferrer">Konsultasi WhatsApp</a>
         </article>
       `;
       const related = products.filter(item => item.brand === product.brand && item.slug_produk !== product.slug_produk).concat(products.filter(item => item.brand !== product.brand)).slice(0, 3);

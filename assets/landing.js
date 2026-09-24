@@ -4,11 +4,24 @@ const rupiah = value => new Intl.NumberFormat("id-ID", { style: "currency", curr
 let products = [];
 let heroProducts = [];
 let heroIndex = 0;
+const fallbackHeroImage = "katalog/assets/fsid-premium-hero.png";
 
 function escapeHtml(value) {
   return String(value ?? "").replace(/[&<>"']/g, char => ({
     "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;"
   })[char]);
+}
+
+function displayText(value) {
+  return String(value ?? "")
+    .replace(/\bRAM\s+RAM\b/gi, "RAM")
+    .replace(/SCANCER/gi, "SCANNER")
+    .replace(/PIGMANT/gi, "PIGMENT")
+    .replace(/SPLIT\s+SCREN/gi, "SPLIT SCREEN")
+    .replace(/BISACETAKLANGSUNG\s+DARI\s+HP/gi, "BISA CETAK LANGSUNG DARI HP")
+    .replace(/TOUCHSREEN/gi, "TOUCHSCREEN")
+    .replace(/\s{2,}/g, " ")
+    .trim();
 }
 
 function parseCsv(text) {
@@ -132,8 +145,8 @@ function rowToProduct(row, index, categoryIndex) {
 }
 
 function productImage(product) {
-  if (!product.image) return `<div class="product-fallback"><span>${escapeHtml(product.category)}</span></div>`;
-  return `<img src="${escapeHtml(product.image)}" alt="${escapeHtml(product.name)}" loading="lazy" referrerpolicy="no-referrer" onerror="this.hidden=true;this.nextElementSibling.hidden=false;"><div class="product-fallback" hidden><span>${escapeHtml(product.category)}</span></div>`;
+  const image = product.image || fallbackHeroImage;
+  return `<img src="${escapeHtml(image)}" alt="${escapeHtml(displayText(product.name))}" loading="lazy" referrerpolicy="no-referrer" onerror="this.hidden=true;this.nextElementSibling.hidden=false;"><div class="product-fallback" hidden><span>${escapeHtml(displayText(product.category))}</span></div>`;
 }
 
 function productCard(product) {
@@ -141,9 +154,9 @@ function productCard(product) {
     <article class="featured-card">
       <a class="product-image" href="katalog/index.html#/produk/${escapeHtml(product.slug)}">${productImage(product)}</a>
       <div class="featured-body">
-        <div class="product-heading"><span>${escapeHtml(product.category)}</span><small>${escapeHtml(product.brand)}</small></div>
-        <h3>${escapeHtml(product.name)}</h3>
-        <p>${escapeHtml(product.specs.filter(Boolean).join(" - "))}</p>
+        <div class="product-heading"><span>${escapeHtml(displayText(product.category))}</span><small>${escapeHtml(displayText(product.brand))}</small></div>
+        <h3>${escapeHtml(displayText(product.name))}</h3>
+        <p>${escapeHtml(product.specs.filter(Boolean).map(displayText).join(" - "))}</p>
         <div class="featured-foot">
           <strong>${rupiah(product.price)}</strong>
           <a class="btn btn-light" href="katalog/index.html#/produk/${escapeHtml(product.slug)}">Detail</a>
@@ -160,7 +173,11 @@ function balancedProducts(category) {
 
 function renderFeatured(category = "") {
   const featured = balancedProducts(category);
-  document.getElementById("featuredProducts").innerHTML = featured.map(productCard).join("");
+  const container = document.getElementById("featuredProducts");
+  container.innerHTML = featured.length
+    ? featured.map(productCard).join("")
+    : `<div class="loading-products" role="status">Belum ada produk pada kategori ini. <a href="katalog/index.html#/" class="inline-link">Lihat katalog lengkap</a>.</div>`;
+  container.setAttribute("aria-busy", "false");
   const viewAll = document.getElementById("viewAllProducts");
   viewAll.href = category ? `katalog/index.html#/kategori/${encodeURIComponent(category)}` : "katalog/index.html#/";
   viewAll.textContent = category ? `Lihat Semua ${category}` : "Lihat Semua Produk";
@@ -170,13 +187,16 @@ function setHero(index) {
   if (!heroProducts.length) return;
   heroIndex = (index + heroProducts.length) % heroProducts.length;
   const product = heroProducts[heroIndex];
-  document.getElementById("heroProductCategory").textContent = product.category;
-  document.getElementById("heroProductBrand").textContent = product.brand;
-  document.getElementById("heroProductName").textContent = product.name;
-  document.getElementById("heroProductSpec").textContent = product.specs.filter(Boolean).join(" - ");
+  document.getElementById("heroProductCategory").textContent = displayText(product.category);
+  document.getElementById("heroProductBrand").textContent = displayText(product.brand);
+  document.getElementById("heroProductName").textContent = displayText(product.name);
+  document.getElementById("heroProductSpec").textContent = product.specs.filter(Boolean).map(displayText).join(" - ");
   document.getElementById("heroProductPrice").textContent = rupiah(product.price);
   document.getElementById("heroProductLink").href = `katalog/index.html#/produk/${product.slug}`;
-  if (product.image) document.getElementById("heroProductImage").src = product.image;
+  const image = document.getElementById("heroProductImage");
+  image.alt = `${displayText(product.name)} - foto produk FS.ID`;
+  image.hidden = false;
+  image.src = product.image || fallbackHeroImage;
 }
 
 function renderLanding() {
@@ -192,12 +212,63 @@ function renderLanding() {
   renderFeatured();
 
   const tickerProducts = products.slice(0, 12);
-  const tickerItems = tickerProducts.map(product => `<span>${escapeHtml(product.category)}</span><b>${escapeHtml(product.name)} - ${rupiah(product.price)}</b>`).join("");
+  const tickerItems = tickerProducts.map(product => `<span>${escapeHtml(displayText(product.category))}</span><b>${escapeHtml(displayText(product.name))} - ${rupiah(product.price)}</b>`).join("");
   if (tickerItems) document.getElementById("landingTicker").innerHTML = tickerItems + tickerItems;
+  document.getElementById("featuredProducts").setAttribute("aria-busy", "false");
+}
+
+function setLandingLoading(isLoading) {
+  const productsContainer = document.getElementById("featuredProducts");
+  productsContainer.setAttribute("aria-busy", String(isLoading));
+  document.getElementById("categoryCount").textContent = isLoading ? "—" : document.getElementById("categoryCount").textContent;
+  document.getElementById("productCount").textContent = isLoading ? "—" : document.getElementById("productCount").textContent;
+  if (isLoading) document.querySelectorAll("[data-category-count]").forEach(element => { element.textContent = "—"; });
+  if (isLoading) {
+    productsContainer.innerHTML = `<div class="loading-products" role="status" aria-live="polite">Memuat produk terbaru<span class="loading-dots" aria-hidden="true">...</span></div>`;
+  }
+}
+
+function renderLandingError() {
+  document.getElementById("categoryCount").textContent = "—";
+  document.getElementById("productCount").textContent = "—";
+  document.querySelectorAll("[data-category-count]").forEach(element => { element.textContent = "—"; });
+  const container = document.getElementById("featuredProducts");
+  container.setAttribute("aria-busy", "false");
+  container.innerHTML = `<div class="loading-products error-state" role="alert"><strong>Produk sedang sulit dimuat.</strong><p>Coba lagi sebentar atau buka katalog untuk melihat data terbaru.</p><div class="hero-actions"><button class="btn btn-light" id="retryLandingProducts" type="button">Coba lagi</button><a class="btn btn-primary" href="katalog/index.html#/">Buka katalog</a></div></div>`;
+  document.getElementById("retryLandingProducts").addEventListener("click", loadProducts);
+}
+
+function loadProducts() {
+  setLandingLoading(true);
+  return fetch(`${sheetCsvUrl}&cache=${Date.now()}`, { cache: "no-store" })
+    .then(response => {
+      if (!response.ok) throw new Error(`Katalog tidak bisa dimuat (${response.status})`);
+      return response.text();
+    })
+    .then(text => {
+      const rows = parseCsv(text);
+      if (!rows.length) throw new Error("Google Sheet kosong");
+      const headers = rows[0].map(header => header.trim().toUpperCase());
+      const categoryIndex = headers.findIndex(header => ["KATEGORI", "CATEGORY"].includes(header));
+      products = rows.slice(1).map((row, index) => rowToProduct(row, index + 1, categoryIndex)).filter(Boolean);
+      if (!products.length) throw new Error("Google Sheet belum berisi produk valid");
+      renderLanding();
+      window.clearInterval(window.fsHeroTimer);
+      window.fsHeroTimer = window.setInterval(() => setHero(heroIndex + 1), 6000);
+    })
+    .catch(error => {
+      renderLandingError();
+      console.warn(error);
+    });
 }
 
 document.querySelector("[data-hero-prev]").addEventListener("click", () => setHero(heroIndex - 1));
 document.querySelector("[data-hero-next]").addEventListener("click", () => setHero(heroIndex + 1));
+document.getElementById("heroProductImage").addEventListener("error", event => {
+  const image = event.currentTarget;
+  if (image.src.endsWith(fallbackHeroImage)) return;
+  image.src = fallbackHeroImage;
+});
 document.querySelectorAll("[data-feature-category]").forEach(button => {
   button.addEventListener("click", () => {
     document.querySelectorAll("[data-feature-category]").forEach(item => item.classList.toggle("active", item === button));
@@ -205,21 +276,5 @@ document.querySelectorAll("[data-feature-category]").forEach(button => {
   });
 });
 
-fetch(`${sheetCsvUrl}&cache=${Date.now()}`, { cache: "no-store" })
-  .then(response => {
-    if (!response.ok) throw new Error(`Katalog tidak bisa dimuat (${response.status})`);
-    return response.text();
-  })
-  .then(text => {
-    const rows = parseCsv(text);
-    const headers = rows[0].map(header => header.trim().toUpperCase());
-    const categoryIndex = headers.findIndex(header => ["KATEGORI", "CATEGORY"].includes(header));
-    products = rows.slice(1).map((row, index) => rowToProduct(row, index + 1, categoryIndex)).filter(Boolean);
-    renderLanding();
-    window.setInterval(() => setHero(heroIndex + 1), 6000);
-  })
-  .catch(error => {
-    document.getElementById("featuredProducts").innerHTML = `<div class="loading-products">Produk belum dapat dimuat. Silakan buka katalog atau hubungi admin FS.ID.</div>`;
-    console.warn(error);
-  });
+loadProducts();
 
