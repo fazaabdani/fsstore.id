@@ -440,8 +440,9 @@ h1 {
   border-color: rgba(245,197,24,.55);
 }
 
-.catalog-main { display: grid; gap: 18px; }
+.catalog-main { display: grid; gap: 18px; min-width: 0; }
 .catalog-status {
+  min-width: 0;
   min-height: 0;
   display: flex;
   align-items: center;
@@ -461,6 +462,7 @@ h1 {
 .catalog-top {
   padding: 16px 18px;
   display: flex;
+  min-width: 0;
   justify-content: space-between;
   gap: 18px;
   align-items: center;
@@ -468,6 +470,7 @@ h1 {
 
 .product-grid {
   display: grid;
+  min-width: 0;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 14px;
 }
@@ -490,7 +493,7 @@ h1 {
 .product-image img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   transition: transform .35s ease;
 }
 .image-fallback {
@@ -508,6 +511,7 @@ h1 {
   font-weight: 700;
   text-align: center;
 }
+.image-fallback[hidden] { display: none; }
 .product-card:hover .product-image img { transform: scale(1.05); }
 .product-visual {
   background:
@@ -634,13 +638,14 @@ h1 {
   min-height: 430px;
   border-radius: 14px;
   overflow: hidden;
+  background: var(--dark-3);
   box-shadow: var(--shadow);
 }
 .detail-image img {
   width: 100%;
   height: 100%;
   min-height: 430px;
-  object-fit: cover;
+  object-fit: contain;
 }
 .detail-visual { position: relative; }
 .detail-gallery {
@@ -667,7 +672,7 @@ h1 {
 .gallery-slide img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
 }
 .gallery-nav {
   position: absolute;
@@ -767,6 +772,10 @@ h1 {
 .footer-inner strong { color: white; margin-top: 0; }
 .footer-inner p { color: var(--muted); line-height: 1.65; margin-bottom: 0; }
 
+@media (max-width: 1200px) {
+  .product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
 @media (max-width: 980px) {
   .nav-links, .nav-cta { display: none; }
   .nav { min-height: 58px; }
@@ -774,7 +783,6 @@ h1 {
   .catalog-hero-inner, .catalog-shell, .detail-view, .footer-inner { grid-template-columns: 1fr; }
   .feature-console { max-width: 620px; }
   .filter-panel { position: static; }
-  .product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 @media (max-width: 620px) {
@@ -787,6 +795,7 @@ h1 {
   .hero-stats div:last-child { border-bottom: 0; }
   .catalog-zone { padding: 36px 14px 58px; }
   .btn { width: 100%; }
+  .catalog-top { flex-direction: column; align-items: stretch; }
   .catalog-status { align-items: stretch; flex-direction: column; }
   .catalog-status .btn { width: 100%; }
 }

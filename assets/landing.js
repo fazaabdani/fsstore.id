@@ -4,7 +4,7 @@ const rupiah = value => new Intl.NumberFormat("id-ID", { style: "currency", curr
 let products = [];
 let heroProducts = [];
 let heroIndex = 0;
-const fallbackHeroImage = "katalog/assets/fsid-premium-hero.png";
+const fallbackHeroImage = "assets/fsid-premium-hero.png";
 
 function escapeHtml(value) {
   return String(value ?? "").replace(/[&<>"']/g, char => ({
@@ -193,10 +193,6 @@ function setHero(index) {
   document.getElementById("heroProductSpec").textContent = product.specs.filter(Boolean).map(displayText).join(" - ");
   document.getElementById("heroProductPrice").textContent = rupiah(product.price);
   document.getElementById("heroProductLink").href = `katalog/index.html#/produk/${product.slug}`;
-  const image = document.getElementById("heroProductImage");
-  image.alt = `${displayText(product.name)} - foto produk FS.ID`;
-  image.hidden = false;
-  image.src = product.image || fallbackHeroImage;
 }
 
 function renderLanding() {
@@ -264,7 +260,7 @@ function loadProducts() {
 
 document.querySelector("[data-hero-prev]").addEventListener("click", () => setHero(heroIndex - 1));
 document.querySelector("[data-hero-next]").addEventListener("click", () => setHero(heroIndex + 1));
-document.getElementById("heroProductImage").addEventListener("error", event => {
+document.getElementById("heroBackdropImage").addEventListener("error", event => {
   const image = event.currentTarget;
   if (image.src.endsWith(fallbackHeroImage)) return;
   image.src = fallbackHeroImage;
