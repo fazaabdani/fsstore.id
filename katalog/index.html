@@ -20,120 +20,169 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/styles.css?v=ux-20260928">
+  <link rel="stylesheet" href="assets/styles.css?v=ux-20261115">
 </head>
 <body class="catalog-page">
   <div class="hazard-strip"></div>
+
   <header class="site-header">
     <nav class="nav" aria-label="Navigasi katalog">
       <a class="brandmark" href="../index.html"><span>FS</span> FS.ID</a>
-      <a class="btn btn-primary nav-cta" href="https://wa.me/6285182661773?text=Assalamu%27alaikum%2C%20saya%20ingin%20konsultasi%20produk%20di%20FS.ID.%20Mohon%20rekomendasi%20sesuai%20kebutuhan%20dan%20anggaran%20saya." target="_blank" rel="noopener noreferrer">Konsultasi</a>
+      <div class="nav-actions">
+        <button class="btn btn-light saved-toggle" type="button" id="savedToggle" aria-pressed="false" title="Lihat produk yang Anda simpan">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1.1L12 21.2l7.8-7.7 1-1.1a5.5 5.5 0 0 0 0-7.8z"/></svg>
+          <span>Tersimpan</span><b id="savedCount">0</b>
+        </button>
+        <a class="btn btn-primary nav-cta" href="https://wa.me/6285182661773?text=Assalamu%27alaikum%2C%20saya%20ingin%20konsultasi%20produk%20di%20FS.ID.%20Mohon%20rekomendasi%20sesuai%20kebutuhan%20dan%20anggaran%20saya." target="_blank" rel="noopener noreferrer">Konsultasi</a>
+      </div>
     </nav>
-    <nav class="category-tabs" aria-label="Kategori produk">
-      <a class="active" href="#/" data-category-tab="">Semua Produk</a>
-      <a href="#/kategori/Laptop" data-category-tab="Laptop">Laptop</a>
-      <a href="#/kategori/PC" data-category-tab="PC">PC</a>
-      <a href="#/kategori/All-in-One" data-category-tab="All-in-One">All-in-One</a>
-      <a href="#/kategori/Printer" data-category-tab="Printer">Printer</a>
-      <a href="#/kategori/Proyektor" data-category-tab="Proyektor">Proyektor</a>
-      <a href="#/kategori/Scanner" data-category-tab="Scanner">Scanner</a>
+    <nav class="category-tabs" id="categoryTabs" aria-label="Kategori produk">
+      <a class="active" href="#/" data-category-tab="">Semua <b data-tab-count="">—</b></a>
+      <a href="#/kategori/Laptop" data-category-tab="Laptop">Laptop <b data-tab-count="Laptop">—</b></a>
+      <a href="#/kategori/PC" data-category-tab="PC">PC <b data-tab-count="PC">—</b></a>
+      <a href="#/kategori/All-in-One" data-category-tab="All-in-One">All-in-One <b data-tab-count="All-in-One">—</b></a>
+      <a href="#/kategori/Printer" data-category-tab="Printer">Printer <b data-tab-count="Printer">—</b></a>
+      <a href="#/kategori/Proyektor" data-category-tab="Proyektor">Proyektor <b data-tab-count="Proyektor">—</b></a>
+      <a href="#/kategori/Scanner" data-category-tab="Scanner">Scanner <b data-tab-count="Scanner">—</b></a>
     </nav>
   </header>
 
   <main>
-    <section class="catalog-hero">
-      <div class="hero-grid"></div>
-      <div class="hero-glow hero-glow-one"></div>
-      <div class="hero-glow hero-glow-two"></div>
-      <div class="container catalog-hero-inner">
-        <div>
-          <p class="terminal-label"><span></span> katalog.fsstore.id / live product</p>
-          <h1>Katalog Produk FS.ID yang lebih dinamis.</h1>
-          <p class="section-lead">Temukan laptop, PC, all-in-one, printer, proyektor, dan scanner. Data produk, harga, serta foto mengikuti Google Sheet toko.</p>
-          <div class="hero-actions">
-            <a class="btn btn-primary" href="#catalogView">Lihat Produk</a>
-            <a class="btn btn-whatsapp" href="https://wa.me/6285182661773?text=Assalamu%27alaikum%2C%20saya%20ingin%20konsultasi%20produk%20di%20FS.ID.%20Mohon%20rekomendasi%20sesuai%20kebutuhan%20dan%20anggaran%20saya." target="_blank" rel="noopener noreferrer">Konsultasi WhatsApp</a>
+    <div id="catalogView">
+      <section class="catalog-hero">
+        <div class="hero-grid" aria-hidden="true"></div>
+        <div class="hero-glow hero-glow-one" aria-hidden="true"></div>
+        <div class="hero-glow hero-glow-two" aria-hidden="true"></div>
+        <div class="container catalog-hero-inner">
+          <div class="hero-copy">
+            <p class="terminal-label"><span></span> katalog fs.id / <em id="sheetStatus">memuat</em></p>
+            <h1>Cari perangkat yang <mark>pas</mark> untuk Anda.</h1>
+            <p class="section-lead">Laptop, PC, all-in-one, printer, proyektor, dan scanner. Harga serta stok mengikuti data toko, jadi selalu yang terbaru.</p>
+            <form class="hero-search" id="heroSearch" role="search" autocomplete="off">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+              <input id="search" type="search" placeholder="Cari nama, merek, atau spesifikasi" aria-label="Cari produk" enterkeyhint="search">
+              <button class="btn btn-primary" type="submit">Cari</button>
+            </form>
+            <div class="quick-chips" role="group" aria-label="Pilih anggaran">
+              <span>Anggaran:</span>
+              <button type="button" data-quick-price="0-2999999">&lt; 3 juta</button>
+              <button type="button" data-quick-price="3000000-4999999">3 – 5 juta</button>
+              <button type="button" data-quick-price="5000000-7999999">5 – 8 juta</button>
+              <button type="button" data-quick-price="8000000-99999999">&gt; 8 juta</button>
+            </div>
+            <div class="hero-stats">
+              <div><strong id="categoryCount" data-count>—</strong><small>Kategori</small></div>
+              <div><strong id="totalProducts" data-count>—</strong><small>Produk</small></div>
+              <div><strong id="availableCount" data-count>—</strong><small>Siap tersedia</small></div>
+            </div>
           </div>
-          <div class="hero-stats">
-            <div><strong id="categoryCount">—</strong><small>Kategori produk</small></div>
-            <div><strong id="totalProducts">—</strong><small>Produk katalog</small></div>
-            <div><strong id="sheetStatus">Memuat</strong><small>Update dari Sheet</small></div>
-          </div>
+
+          <aside class="spotlight" aria-label="Sorotan produk" aria-live="off">
+            <div class="spotlight-top"><span class="pulse"></span> Pilihan hari ini <div class="spotlight-nav"><button type="button" id="spotPrev" aria-label="Sebelumnya">&larr;</button><button type="button" id="spotNext" aria-label="Berikutnya">&rarr;</button></div></div>
+            <a class="spotlight-card" id="spotLink" href="#/">
+              <div class="spotlight-media" id="spotMedia"><div class="skeleton-block"></div></div>
+              <div class="spotlight-info">
+                <p id="featureBrand">FS.ID</p>
+                <h2 id="featureName">Memuat katalog...</h2>
+                <small id="featureSpec">Produk sedang disiapkan.</small>
+                <div class="spotlight-bottom"><strong id="featurePrice">—</strong><span id="featureStatus" class="status">Sync</span></div>
+              </div>
+            </a>
+            <div class="spotlight-progress" aria-hidden="true"><i id="spotProgress"></i></div>
+          </aside>
         </div>
-        <aside class="feature-console" aria-label="Sorotan katalog">
-          <div class="console-top"><span></span> rekomendasi produk</div>
-          <div class="console-card">
-            <p class="console-brand" id="featureBrand">FS.ID</p>
-            <h2 id="featureName">Memuat katalog...</h2>
-            <p id="featureSpec">Produk dari Google Sheet sedang disiapkan.</p>
-            <div class="console-bottom">
-              <strong id="featurePrice">Live</strong>
-              <span id="featureStatus">Sync</span>
-            </div>
-          </div>
-          <div class="console-mini">
-            <div><small>FILTER</small><strong>Kategori / Brand / Harga</strong></div>
-            <div><small>FOTO</small><strong>Drive thumbnail</strong></div>
-          </div>
-        </aside>
-      </div>
-    </section>
+      </section>
 
-    <div class="ticker-wrap" aria-hidden="true">
-      <div class="ticker" id="tickerTrack">
-        <span>FS.ID</span><b>Live katalog dari Google Sheet</b><span>Data produk</span><b>Foto produk dinamis</b>
-        <span>FS.ID</span><b>Live katalog dari Google Sheet</b><span>Data produk</span><b>Foto produk dinamis</b>
-      </div>
-    </div>
-
-    <section class="catalog-zone">
-      <div class="catalog-shell" id="catalogView">
-        <aside class="filter-panel" aria-label="Filter produk">
-          <p class="panel-kicker">control panel</p>
-          <h2>Filter produk</h2>
-          <div class="field"><label for="category">Kategori</label><select id="category"><option value="">Semua kategori</option></select></div>
-          <div class="field"><label for="search">Cari produk</label><input id="search" type="search" placeholder="Cari nama, merek, seri, atau spesifikasi..." autocomplete="off"></div>
-          <div class="field"><label for="brand">Brand</label><select id="brand"><option value="">Semua brand</option></select></div>
-          <div class="field"><label for="price">Harga</label><select id="price"><option value="">Semua harga</option><option value="0-3999999">Di bawah 4 juta</option><option value="4000000-5000000">4-5 juta</option><option value="5000000-6000000">5-6 juta</option><option value="6000000-8000000">6-8 juta</option><option value="8000001-99999999">Di atas 8 juta</option></select></div>
-          <div class="field spec-filter hidden" data-spec-filter="0"><label for="processor" data-spec-label="0">Processor</label><select id="processor"><option value="">Semua processor</option></select></div>
-          <div class="field spec-filter hidden" data-spec-filter="1"><label for="ram" data-spec-label="1">RAM</label><select id="ram"><option value="">Semua RAM</option></select></div>
-          <div class="field spec-filter hidden" data-spec-filter="2"><label for="storage" data-spec-label="2">Storage</label><select id="storage"><option value="">Semua storage</option></select></div>
-          <div class="field spec-filter hidden" data-spec-filter="3"><label for="screen" data-spec-label="3">Ukuran layar</label><select id="screen"><option value="">Semua ukuran</option></select></div>
-          <div class="field"><label for="need">Fitur</label><select id="need"><option value="">Semua fitur</option></select></div>
-          <div class="field"><label for="status">Status ketersediaan</label><select id="status"><option value="">Semua status</option></select></div>
-          <button class="btn btn-light" id="resetFilters" type="button">Reset filter</button>
-        </aside>
-
-        <section class="catalog-main">
-          <div class="catalog-top">
-            <div>
-              <p class="panel-kicker">hasil pencarian</p>
-              <h2 id="resultCount" aria-live="polite">Memuat produk...</h2>
-            </div>
-            <a class="btn btn-whatsapp" href="https://wa.me/6285182661773?text=Assalamu%27alaikum%2C%20saya%20ingin%20konsultasi%20produk%20di%20FS.ID.%20Mohon%20rekomendasi%20sesuai%20kebutuhan%20dan%20anggaran%20saya." target="_blank" rel="noopener noreferrer">Konsultasi Produk</a>
-          </div>
-          <div id="catalogStatus" class="catalog-status" role="status" aria-live="polite"></div>
-          <div id="productGrid" class="product-grid" aria-live="polite">
-            <div class="catalog-loading" role="status">Menyiapkan produk terbaru...</div>
-          </div>
-        </section>
+      <div class="ticker-wrap" aria-hidden="true">
+        <div class="ticker" id="tickerTrack">
+          <span>FS.ID</span><b>Katalog live dari data toko</b><span>Harga terbaru</span><b>Konsultasi gratis via WhatsApp</b>
+          <span>FS.ID</span><b>Katalog live dari data toko</b><span>Harga terbaru</span><b>Konsultasi gratis via WhatsApp</b>
+        </div>
       </div>
 
-      <div class="catalog-shell detail-shell hidden" id="detailView">
-        <section class="catalog-main">
-          <a class="btn btn-light back-btn" href="#/">Kembali ke katalog</a>
-          <div id="detailContent" class="detail-view"></div>
-          <div class="related-block">
-            <div class="section-head">
+      <section class="catalog-zone" id="catalogZone">
+        <div class="catalog-shell">
+          <aside class="filter-panel" id="filterPanel" aria-label="Filter produk">
+            <div class="filter-head">
               <div>
-                <p class="panel-kicker">produk terkait</p>
-                <h2>Rekomendasi lain dari katalog</h2>
+                <p class="panel-kicker">Saring hasil</p>
+                <h2>Filter produk</h2>
+              </div>
+              <button class="icon-btn filter-close" type="button" id="filterClose" aria-label="Tutup filter">&times;</button>
+            </div>
+            <div class="filter-body">
+              <div class="field"><label for="category">Kategori</label><select id="category"><option value="">Semua kategori</option></select></div>
+              <div class="field"><label for="brand">Brand</label><select id="brand"><option value="">Semua brand</option></select></div>
+              <div class="field"><label for="price">Harga</label><select id="price"><option value="">Semua harga</option><option value="0-2999999">Di bawah 3 juta</option><option value="3000000-4999999">3 – 5 juta</option><option value="5000000-7999999">5 – 8 juta</option><option value="8000000-99999999">Di atas 8 juta</option></select></div>
+              <div class="field spec-filter hidden" data-spec-filter="0"><label for="processor" data-spec-label="0">Processor</label><select id="processor"><option value="">Semua processor</option></select></div>
+              <div class="field spec-filter hidden" data-spec-filter="1"><label for="ram" data-spec-label="1">RAM</label><select id="ram"><option value="">Semua RAM</option></select></div>
+              <div class="field spec-filter hidden" data-spec-filter="2"><label for="storage" data-spec-label="2">Storage</label><select id="storage"><option value="">Semua storage</option></select></div>
+              <div class="field spec-filter hidden" data-spec-filter="3"><label for="screen" data-spec-label="3">Ukuran layar</label><select id="screen"><option value="">Semua ukuran</option></select></div>
+              <div class="field"><label for="need">Fitur</label><select id="need"><option value="">Semua fitur</option></select></div>
+              <div class="field"><label for="status">Ketersediaan</label><select id="status"><option value="">Semua status</option></select></div>
+            </div>
+            <div class="filter-foot">
+              <button class="btn btn-light" id="resetFilters" type="button">Reset filter</button>
+              <button class="btn btn-primary filter-apply" id="filterApply" type="button">Lihat <span id="applyCount">0</span> produk</button>
+            </div>
+          </aside>
+
+          <section class="catalog-main">
+            <div class="toolbar">
+              <div class="toolbar-title">
+                <p class="panel-kicker">Hasil pencarian</p>
+                <h2 id="resultCount" aria-live="polite">Memuat produk...</h2>
+              </div>
+              <div class="toolbar-controls">
+                <button class="btn btn-light filter-open" type="button" id="filterOpen" aria-controls="filterPanel">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/></svg> Filter <b id="filterBadge" hidden>0</b>
+                </button>
+                <label class="sort-box"><span>Urutkan</span>
+                  <select id="sort" aria-label="Urutkan produk">
+                    <option value="default">Rekomendasi</option>
+                    <option value="price-asc">Harga terendah</option>
+                    <option value="price-desc">Harga tertinggi</option>
+                    <option value="name">Nama A – Z</option>
+                  </select>
+                </label>
+                <div class="view-toggle" role="group" aria-label="Tampilan produk">
+                  <button type="button" data-view="grid" class="active" aria-label="Tampilan kotak" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></svg></button>
+                  <button type="button" data-view="list" aria-label="Tampilan daftar" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+                </div>
               </div>
             </div>
-            <div id="relatedProducts" class="product-grid"></div>
+
+            <div class="active-filters" id="activeFilters" aria-label="Filter aktif"></div>
+            <div id="catalogStatus" class="catalog-status" role="status" aria-live="polite"></div>
+            <div id="productGrid" class="product-grid" aria-live="polite" aria-busy="true"></div>
+            <div class="load-more-wrap"><button class="btn btn-light" id="loadMore" type="button" hidden>Tampilkan lebih banyak</button></div>
+            <div class="saved-bar" id="savedBar" hidden>
+              <span><b id="savedBarCount">0</b> produk tersimpan</span>
+              <a class="btn btn-whatsapp" id="savedWa" href="#" target="_blank" rel="noopener noreferrer">Tanya via WhatsApp</a>
+            </div>
+          </section>
+        </div>
+      </section>
+    </div>
+
+    <section class="catalog-zone detail-zone hidden" id="detailView">
+      <div class="detail-shell">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <a href="#/" id="crumbHome">Katalog</a><span>/</span><a href="#/" id="crumbCategory">Kategori</a><span>/</span><em id="crumbName">Produk</em>
+        </nav>
+        <div id="detailContent" class="detail-view"></div>
+        <div class="related-block">
+          <div class="section-head">
+            <div>
+              <p class="panel-kicker">Produk terkait</p>
+              <h2>Mungkin Anda juga suka</h2>
+            </div>
+            <a class="btn btn-light" href="#/" id="backToCatalog">Kembali ke katalog</a>
           </div>
-        </section>
+          <div id="relatedProducts" class="product-grid"></div>
+        </div>
       </div>
+      <div class="mobile-cta" id="mobileCta"></div>
     </section>
   </main>
 
@@ -141,21 +190,23 @@
     <div class="footer-inner">
       <div>
         <h3>FS.ID</h3>
-        <p>Penyedia perangkat teknologi untuk kebutuhan personal, pendidikan, profesional, dan bisnis.</p>
+        <p>Penyedia perangkat teknologi untuk kebutuhan personal, pendidikan, profesional, dan bisnis. Jl. Diponegoro No.204B, Kajen, Pekalongan.</p>
       </div>
       <div>
         <strong>Kategori</strong>
-        <p>Laptop, PC, all-in-one, printer, proyektor, scanner, dan produk toko terbaru.</p>
+        <p>Laptop, PC, all-in-one, printer, proyektor, dan scanner.</p>
       </div>
       <div>
-        <strong>Katalog</strong>
-        <p>Data produk, harga, dan foto utama mengikuti update Google Sheet.</p>
+        <strong>Harga &amp; stok</strong>
+        <p>Data produk, harga, dan foto mengikuti update toko. Konfirmasi ketersediaan lewat WhatsApp sebelum datang.</p>
       </div>
     </div>
   </footer>
 
+  <div class="filter-backdrop" id="filterBackdrop" hidden></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
   <script src="assets/products.js?v=category-20260627"></script>
-  <script src="assets/catalog.js?v=ux-20260924"></script>
+  <script src="assets/catalog.js?v=ux-20261115"></script>
 </body>
 </html>
-
