@@ -765,3 +765,72 @@ h1 {
   .faq-list summary { font-size: 16px; }
   .wa-float { right: 12px; bottom: 12px; min-height: 50px; padding: 0 16px 0 13px; font-size: 14px; }
 }
+
+/* ===== Data toko nyata: rating, peta, sekolah (19 Nov 2026) ===== */
+.hero-badges {
+  margin: 18px 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 16px;
+  font-size: 14px;
+  color: var(--muted);
+}
+.rating-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border: 1px solid rgba(245,197,24,.45);
+  border-radius: 999px;
+  background: rgba(0,0,0,.35);
+  color: var(--text);
+  font-weight: 700;
+}
+.rating-chip b { color: var(--gold); font-weight: 900; }
+.rating-chip:hover { border-color: var(--gold); background: rgba(245,197,24,.12); }
+.hero-badges span { font-weight: 700; color: rgba(255,255,255,.82); }
+.trust-grid .inline-link { color: var(--gold); text-decoration: underline; text-underline-offset: 3px; }
+
+.school-section {
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  background: linear-gradient(135deg, rgba(245,197,24,.12), rgba(245,197,24,0) 60%), var(--dark);
+}
+.school-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  gap: 48px;
+  align-items: center;
+}
+.school-section .section-lead { max-width: 640px; }
+.school-actions { display: grid; gap: 12px; }
+.school-actions .btn { width: 100%; justify-content: center; text-align: center; }
+
+.location-panel { gap: 20px; }
+.location-panel .btn { align-self: stretch; text-align: center; }
+.map-embed {
+  width: 100%;
+  height: 260px;
+  border: 0;
+  border-radius: 4px;
+  background: #1a1a1a;
+  filter: grayscale(.15) contrast(1.05);
+}
+.footer-inner p a { text-decoration: underline; text-underline-offset: 3px; }
+.footer-inner p a:hover { color: var(--gold); }
+
+@media (max-width: 980px) {
+  .school-grid { grid-template-columns: 1fr; gap: 26px; }
+}
+@media (max-width: 620px) {
+  .hero-badges { font-size: 13px; }
+  .map-embed { height: 220px; }
+}
+
+/* Perbaikan lebar kolom lokasi di ponsel (peta tidak boleh melebarkan grid) */
+.location-grid > * { min-width: 0; }
+.location-panel { width: 100%; }
+@media (max-width: 980px) {
+  .location-grid { grid-template-columns: minmax(0, 1fr); }
+}
