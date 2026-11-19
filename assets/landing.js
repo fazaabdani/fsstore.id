@@ -133,12 +133,15 @@ function rowToProduct(row, index, categoryIndex) {
   const brand = resolveBrand(rawBrand, series, category);
   const name = productName(rawBrand, series, category);
   const photos = splitPhotoLinks(row.slice(11, 14).filter(Boolean).join("\n")).map(driveImageUrl).filter(Boolean).slice(0, 3);
+  const stock = row[7]?.trim();
+  const status = row[8]?.trim() || (Number(stock) > 0 ? "Tersedia" : "Cek Ketersediaan");
   return {
     brand,
     name,
     category,
     specs,
     price,
+    available: status.toLowerCase().includes("tersedia"),
     image: photos[0] || "",
     slug: slugify(`${name}-${specs.join("-")}-${index}`)
   };
@@ -196,11 +199,27 @@ function setHero(index) {
 }
 
 function renderLanding() {
+  // Landing hanya menampilkan produk yang berstatus Tersedia, supaya angka dan pilihan jujur.
+  // Kalau tidak ada satu pun yang tersedia (data status kosong), tampilkan semuanya.
+  const allProducts = products;
+  const inStock = allProducts.filter(product => product.available);
+  products = inStock.length ? inStock : allProducts;
+
   const categoryCounts = Object.fromEntries(categoryOrder.map(category => [category, products.filter(product => product.category === category).length]));
   document.getElementById("categoryCount").textContent = Object.values(categoryCounts).filter(Boolean).length;
-  document.getElementById("productCount").textContent = `${products.length}+`;
+  document.getElementById("productCount").textContent = String(products.length);
   document.querySelectorAll("[data-category-count]").forEach(element => {
     element.textContent = categoryCounts[element.dataset.categoryCount] || 0;
+  });
+  // Sembunyikan kategori yang stoknya kosong semua (kartu kategori, tab produk, dan tab navigasi).
+  categoryOrder.forEach(category => {
+    const empty = !categoryCounts[category];
+    document.querySelectorAll(`[data-category-count="${category}"]`).forEach(element => {
+      const card = element.closest(".category-item");
+      if (card) card.hidden = empty;
+    });
+    document.querySelectorAll(`[data-feature-category="${category}"]`).forEach(button => { button.hidden = empty; });
+    document.querySelectorAll(`.category-tabs a[href$="/kategori/${category}"]`).forEach(link => { link.hidden = empty; });
   });
 
   heroProducts = categoryOrder.map(category => products.find(product => product.category === category && product.image) || products.find(product => product.category === category)).filter(Boolean);
@@ -246,6 +265,7 @@ function loadProducts() {
       if (!rows.length) throw new Error("Google Sheet kosong");
       const headers = rows[0].map(header => header.trim().toUpperCase());
       const categoryIndex = headers.findIndex(header => ["KATEGORI", "CATEGORY"].includes(header));
+      // Indeks baris dihitung dari seluruh data (termasuk yang habis) supaya slug sama dengan di katalog.
       products = rows.slice(1).map((row, index) => rowToProduct(row, index + 1, categoryIndex)).filter(Boolean);
       if (!products.length) throw new Error("Google Sheet belum berisi produk valid");
       renderLanding();

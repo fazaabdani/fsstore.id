@@ -648,3 +648,120 @@ h1 {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
 
+
+/* ===== Kepercayaan, cara belanja, FAQ, tombol WhatsApp (19 Nov 2026) ===== */
+.category-item[hidden],
+.product-tabs button[hidden],
+.category-tabs a[hidden] { display: none !important; }
+
+.trust-bar {
+  padding: 0 20px;
+  border-bottom: 1px solid var(--line);
+  background: var(--dark);
+}
+.trust-grid {
+  max-width: 1240px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+.trust-grid article {
+  padding: 30px 26px 32px 0;
+  border-right: 1px solid var(--line);
+}
+.trust-grid article + article { padding-left: 26px; }
+.trust-grid article:last-child { border-right: 0; }
+.trust-grid span { color: var(--gold); font-family: "Space Mono", monospace; font-size: 12px; font-weight: 700; }
+.trust-grid strong { display: block; margin-top: 12px; font-size: 18px; line-height: 1.25; }
+.trust-grid p { margin: 8px 0 0; color: var(--muted); font-size: 14px; line-height: 1.65; }
+
+.steps-grid {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+}
+.steps-grid li {
+  position: relative;
+  padding: 26px 24px 28px;
+  border: 1px solid var(--line);
+  background: var(--dark-2);
+}
+.steps-grid b {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  color: var(--black);
+  background: var(--gold);
+  font-size: 22px;
+  font-weight: 900;
+}
+.steps-grid strong { display: block; margin-top: 22px; font-size: 21px; }
+.steps-grid p { margin: 10px 0 0; color: var(--muted); line-height: 1.7; }
+.steps-actions { margin-top: 30px; display: flex; flex-wrap: wrap; gap: 12px; }
+
+.faq-list { max-width: 860px; border-top: 1px solid var(--line); }
+.faq-list details { border-bottom: 1px solid var(--line); }
+.faq-list summary {
+  position: relative;
+  padding: 22px 48px 22px 0;
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1.4;
+  cursor: pointer;
+  list-style: none;
+}
+.faq-list summary::-webkit-details-marker { display: none; }
+.faq-list summary::after {
+  content: "+";
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--gold);
+  font-size: 28px;
+  font-weight: 500;
+}
+.faq-list details[open] summary::after { content: "\2212"; }
+.faq-list details p { margin: 0 0 24px; max-width: 720px; color: var(--muted); line-height: 1.75; }
+
+.wa-float {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 90;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 54px;
+  padding: 0 20px 0 16px;
+  color: #fff;
+  background: var(--green);
+  border-radius: 999px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.45), 0 0 0 3px rgba(39,198,109,.25);
+  font-size: 15px;
+  font-weight: 800;
+  transition: transform .18s ease, background .18s ease;
+}
+.wa-float:hover { background: #107f40; transform: translateY(-2px); }
+
+@media (max-width: 980px) {
+  .trust-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .trust-grid article { padding: 24px 20px 24px 0; border-bottom: 1px solid var(--line); }
+  .trust-grid article + article { padding-left: 0; }
+  .trust-grid article:nth-child(even) { padding-left: 20px; border-right: 0; }
+  .trust-grid article:nth-last-child(-n+2) { border-bottom: 0; }
+  .steps-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 620px) {
+  .trust-bar { padding: 0 14px; }
+  .trust-grid { grid-template-columns: 1fr; }
+  .trust-grid article,
+  .trust-grid article:nth-child(even) { padding: 20px 0; border-right: 0; border-bottom: 1px solid var(--line); }
+  .trust-grid article:last-child { border-bottom: 0; }
+  .faq-list summary { font-size: 16px; }
+  .wa-float { right: 12px; bottom: 12px; min-height: 50px; padding: 0 16px 0 13px; font-size: 14px; }
+}
