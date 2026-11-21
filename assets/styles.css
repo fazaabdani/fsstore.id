@@ -789,7 +789,14 @@ h1 {
 }
 .rating-chip b { color: var(--gold); font-weight: 900; }
 .rating-chip:hover { border-color: var(--gold); background: rgba(245,197,24,.12); }
-.hero-badges span { font-weight: 700; color: rgba(255,255,255,.82); }
+.hero-badges .pill {
+  padding: 8px 14px;
+  border: 1px solid rgba(245,197,24,.45);
+  border-radius: 999px;
+  background: rgba(0,0,0,.35);
+  color: var(--text);
+  font-weight: 700;
+}
 .trust-grid .inline-link { color: var(--gold); text-decoration: underline; text-underline-offset: 3px; }
 
 .school-section {
